@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ЦФО" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Entity</property>
+      <property name="prompt_text">Выберите ЦФО</property>
+      <property name="scope">ruleset</property>
+      <value>"бу ЦФО"</value>
+    </variable>
+    <variable id="2" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="3" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="6.01.01. Удалить данные 6 блок" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">6.01.01. Удалить данные 6 блок</property>
+      <variable_references>
+        <variable_reference id="2" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">6.01.01. Удалить данные 6 блок</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">6.01.01. Удалить данные 6 блок</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="ЦФО">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">6.01.01. Удалить данные 6 блок</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"80_Увеличение"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+  var NextM=2;
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+SET EMPTYMEMBERSETS ON;
+
+FIX(
+/*ПРОЧЕЕ 								*/"бу прочих справочников"
+/*ПРОДУКЦИЯ  							*/"бу вида продукции"
+/*НАПРАВЛЕНИЕ  		*/"бу направления"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ  						*/"бу элемента затрат"
+/*МВЗ ПОЛУЧАТЕЛЬ  						*/"бу МВЗ (пол-ль)"
+/*ВАЛЮТА  								*/"RUR"
+/*ПЕРИОД  								*/ @DESCENDANTS ("Итого год",0), "P0"
+/*КОНТРАГЕНТЫ  							*/@DESCENDANTS ("Всего по контрагентам",0)
+/*ВЕРСИЯ	  							*/"Рабочая 2"
+/*ГОД  									*/"2018"
+/*МВЗ  									*/"ТЧМС в целом","ТЧМ в целом"
+/*СЦЕНАРИЙ  							*/{СЦЕНАРИЙ}
+/*ВИД ЗАТРАТ  							*/@RELATIVE("Сырье и основные материалы",0)
+/*ЦФО  									*/@LIST("ОСиТ","Отдел снабжения","Коммерческая служба") and @RELATIVE({ЦФО},0)
+/*СТАТЬИ  								*/"Сырье.", "Топливо.", "Материалы на технологические цели."
+/*ПОКАЗАТЕЛИ  							*/"Цена"
+/*СЧЕТА БАЛАНСА  						*/"Группы Видов движения"
+)
+
+CLEARBLOCK ALL;
+
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

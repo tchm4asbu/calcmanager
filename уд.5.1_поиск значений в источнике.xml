@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables></variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="уд.5.1_поиск значений в источнике" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">уд.5.1_поиск значений в источнике</property>
+      <script><![CDATA[SET DATAEXPORTOPTIONS
+{
+DataExportLevel "Level0";
+DataExportRelationalFile ON;
+DataExportDimHeader ON;
+};
+
+FIX(
+/*МВЗ 								*/@RELATIVE("ТЧМС итого",0)
+)
+
+FIX(
+/*МВЗ ПОЛУЧАТЕЛЬ 					*/@RELATIVE("МВЗ получатели",0)
+/*МВЗ 								*/
+/*СЦЕНАРИЙ 							*/"Проект"
+/*ГОД 								*/"2018"
+/*ВАЛЮТА 							*/"RUR"
+/*ВЕРСИЯ 							*/"Рабочая_3"
+/*ПРОЧЕЕ 							*/@IDESCENDANTS("ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС")
+/*НАПРАВЛЕНИЕ 						*/"бу направления"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ 					*/@IDESCENDANTS("ЭЛЕМЕНТЫ ЗАТРАТ ТЧМ И ТЧМС")
+/*ЦФО 								*/"ПЭО"
+/*КОНТРАГЕНТЫ 						*/"бу контрагента"
+/*ПРОДУКЦИЯ 						*/@IDESCENDANTS("Итого по продукции",0)
+/*ВИД ЗАТРАТ 						*/"Ж/Д тариф РЖД"
+/*СТАТЬИ 							*/@IDESCENDANTS("ПОЛНАЯ СЕБЕСТОИМОСТЬ",0)
+/*СЧЕТА БАЛАНСА 					*/@IDESCENDANTS("Начисление",0)
+/*ПОКАЗАТЕЛИ 						*/"Сумма"
+/*ПЕРИОД 							*/"Ноябрь"
+)
+
+DATAEXPORT "File" ";" "C:\SD-5-1.txt";
+
+ENDFIX
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

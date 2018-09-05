@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables></variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="Alpha" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">Alpha</property>
+      <property name="enableNotifications">false</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <script></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

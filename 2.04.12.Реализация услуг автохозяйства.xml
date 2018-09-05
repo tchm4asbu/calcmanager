@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="2" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="3" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="2.04.12.Реализация услуг автохозяйства" product="Planning">
+      <property name="description">Реализация услуг автохозяйства</property>
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">2.04.12.Реализация услуг автохозяйства</property>
+      <property name="enableNotifications">false</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <variable_references>
+        <variable_reference id="2" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.04.12.Реализация услуг автохозяйства</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.04.12.Реализация услуг автохозяйства</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.04.12.Реализация услуг автохозяйства</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"80_Увеличение"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+  var NextM=2;
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+/*Агрегируем полную себестоимость*/
+
+
+FIX(
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					 */
+/*ЦФО 						  		 */"ПЭО"
+/*КОНТРАГЕНТЫ 						 */"бу контрагента"
+/*НАПРАВЛЕНИЕ 	 					 */"бу направления"
+/*ПРОЧЕЕ 							 */
+/*СЧЕТА БАЛАНСА                      */@RELATIVE("Начисление",0)
+/*МВЗ ПОЛУЧАТЕЛЬ 					 */	
+/*ВАЛЮТА 							  */"RUR"
+/*ВИД ЗАТРАТ 						  */
+/*СТАТЬИ							  */@RELATIVE("ПОЛНАЯ СЕБЕСТОИМОСТЬ",0)
+/*СЦЕНАРИЙ							  */{СЦЕНАРИЙ}
+/*ПЕРИОД							  */@RELATIVE("Итого год",0)
+/*ВЕРСИЯ 							  */{ВЕРСИЯ}
+/*ГОД 								  */{ГОД}
+/*ПРОДУКЦИЯ 						  */
+/*ПОКАЗАТЕЛИ 						   */"Сумма на ед"
+/*МВЗ 									*/@RELATIVE("№12. Автохозяйство",0 )
+)
+
+FIX(
+/*ПРОДУКЦИЯ 						  */@RELATIVE("Услуги автоцеха",0)	
+/*ВИД ЗАТРАТ 						  */@RELATIVE("Всего по видам затрат",0)
+/*ПРОЧЕЕ 							  */@RELATIVE("Итого по прочим справочникам",0)
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					  */
+/*МВЗ ПОЛУЧАТЕЛЬ 					  */@RELATIVE("Итого по МВЗ (пол-ль)",0)
+)
+
+AGG("ЭЛЕМЕНТЫ_ЗАТРАТ");
+
+ENDFIX
+
+
+FIX(
+/*ПРОДУКЦИЯ 						  */@RELATIVE("Услуги автоцеха",0)	
+/*ВИД ЗАТРАТ 						  */@RELATIVE("Всего по видам затрат",0)
+/*ПРОЧЕЕ 							  */
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					  */"ЭЛЕМЕНТЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*МВЗ ПОЛУЧАТЕЛЬ 					  */@RELATIVE("Итого по МВЗ (пол-ль)",0)
+)
+
+AGG("ПРОЧЕЕ");
+
+ENDFIX
+
+FIX(
+/*ПРОДУКЦИЯ 						  */@RELATIVE("Услуги автоцеха",0)	
+/*ВИД ЗАТРАТ 						  */@RELATIVE("Всего по видам затрат",0)
+/*ПРОЧЕЕ 							  */"Прочие справочники ТЧМ И ТЧМС"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					  */"ЭЛЕМЕНТЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*МВЗ ПОЛУЧАТЕЛЬ 					  */	
+)
+
+AGG("МВЗ ПОЛУЧАТЕЛЬ");
+
+ENDFIX
+
+FIX(
+/*ПРОДУКЦИЯ 						  */	
+/*ВИД ЗАТРАТ 						  */@RELATIVE("Всего по видам затрат",0)
+/*ПРОЧЕЕ 							  */"Прочие справочники ТЧМ И ТЧМС"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					  */"ЭЛЕМЕНТЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*МВЗ ПОЛУЧАТЕЛЬ 					  */"МВЗ получатели"	
+)
+
+AGG("ПРОДУКЦИЯ");
+
+ENDFIX
+
+FIX(
+/*ПРОДУКЦИЯ 						  */@RELATIVE("Итого по продукции",0),"ПРОДУКЦИЯ ТЧМ и ТЧМС"	
+/*ВИД ЗАТРАТ 						  */
+/*ПРОЧЕЕ 							  */"Прочие справочники ТЧМ И ТЧМС"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					  */"ЭЛЕМЕНТЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*МВЗ ПОЛУЧАТЕЛЬ 					  */"МВЗ получатели"	
+)
+
+AGG("ВИД_ЗАТРАТ");
+
+ENDFIX
+ENDFIX
+FIX(
+/*ЦФО 								*/"№12 Автохозяйство"
+/*ВАЛЮТА 							*/"RUR"
+/*КОНТРАГЕНТЫ 						*/
+/*МВЗ 								*/
+/*НАПРАВЛЕНИЕ 						*/
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					*/"бу элемента затрат"
+/*ГОД								*/{ГОД}
+/*ВЕРСИЯ							*/{ВЕРСИЯ}
+/*ПЕРИОД							*/@RELATIVE("Всего год",0)
+/*СЦЕНАРИЙ							*/{СЦЕНАРИЙ}
+/*ВИД ЗАТРАТ						*/"бу видов затрат"
+/*ПРОЧЕЕ							*/"бу прочих справочников"
+/*МВЗ ПОЛУЧАТЕЛЬ					*/"бу МВЗ (пол-ль)"
+/*ПРОДУКЦИЯ							*/
+/*СТАТЬИ							*/
+/*СЧЕТА БАЛАНСА						*/"20_Начисление"
+/*ПОКАЗАТЕЛИ						*/
+)
+
+
+
+/*  Подтягиваем "Кол-во"->"Реализация продукции вспомогательных цехов*/
+
+FIX(
+/*МВЗ 								*/@Relative("№12. Автохозяйство", 0 )
+/*КОНТРАГЕНТЫ 						*/"ООО ЧОППромБезопасность","ООО Тулачермет-Сталь","ПАО Щекинский завод КВОиТ","ООО Сибмонтажсервис-Строй","Полема","КНИ","бу контрагента"
+/*НАПРАВЛЕНИЕ 						*/"Тов. пр-ция (сч 43)"/*, "Соц. объекты (сч 29)","Услуги (сч 91;85)"*/
+/*ПРОДУКЦИЯ							*/@Relative("Услуги автоцеха",0 )
+/*СТАТЬИ							*/"Реализация продукции вспомогательных цехов"
+/*ПОКАЗАТЕЛИ						*/
+)
+
+
+SET CREATENONMISSINGBLK ON;
+
+		FIX(/*ПРОДУКЦИЯ					*/@Relative("Услуги автоцеха",0 ))
+
+		"Кол-во" = "Кол-во с учетом годного выхода"-> "бу статьи"->"20_Выбытие";
+
+		"Цена"(
+		IF(@ISMBR(@RELATIVE("Внутригрупповые", 0 )) OR @ISMBR("бу контрагента") )
+		"Цена" = "Цена внутренняя" -> "бу контрагента"->"бу направления"->"ПЭО"->"бу статьи"->"62_Реализация без НДС";
+		ELSEIF(@ISMBR(@RELATIVE("Внешние", 0 ))) 
+		"Цена" = "Цена для стор.организаций" -> "бу контрагента"->"бу направления"->"ПЭО"->"бу статьи"->"62_Реализация без НДС";
+		ENDIF
+		)
+
+		"Сумма" = "Кол-во" * "Цена" ;  
+
+
+		ENDFIX
+		
+		FIX(/*ПРОДУКЦИЯ					*/"Выдача путевых листов")
+
+		"Сумма на ед" = "Всего по видам затрат"->"бу контрагента"->"бу направления"->"ПЭО"->"РАСХОДЫ ПО ПЕРЕДЕЛУ"->"Сумма на ед.";
+		
+		"Себестоимость" = "Кол-во" * "Сумма на ед";
+
+		ENDFIX
+		
+		FIX(/*ПРОДУКЦИЯ					*/@REMOVE(@Relative("Услуги автоцеха",0 ),"Выдача путевых листов"))
+
+		"Сумма на ед" = "Сумма на ед"->"бу контрагента"->"бу направления"->"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"->"Прочие справочники ТЧМ И ТЧМС"->"ЭЛЕМЕНТЫ ЗАТРАТ ТЧМ И ТЧМС"->"ПОЛНАЯ СЕБЕСТОИМОСТЬ"->"ПЭО"->"20_Начисление"->"МВЗ получатели";
+		
+		"Себестоимость" = "Кол-во" * "Сумма на ед";
+
+		ENDFIX
+
+
+SET CREATENONMISSINGBLK OFF;
+CLEARBLOCK EMPTY;
+
+ENDFIX
+
+ENDFIX
+/*зачищаем данные */
+
+FIX(
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					 */"ЭЛЕМЕНТЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*ЦФО 						  		 */"ПЭО"
+/*КОНТРАГЕНТЫ 						 */"бу контрагента"
+/*НАПРАВЛЕНИЕ 	 					 */"бу направления"
+/*ПРОЧЕЕ 							 */@RELATIVE("Итого по прочим справочникам",0),"Прочие справочники ТЧМ И ТЧМС"
+/*СЧЕТА БАЛАНСА                      */@RELATIVE("Начисление",0)
+/*МВЗ ПОЛУЧАТЕЛЬ 					  */@RELATIVE("Итого по МВЗ (пол-ль)",0),"МВЗ получатели"
+/*ВАЛЮТА 							  */"RUR"
+/*ВИД ЗАТРАТ 						  */@RELATIVE("Всего по видам затрат",0), "ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*СТАТЬИ							  */@RELATIVE("ПОЛНАЯ СЕБЕСТОИМОСТЬ",0)
+/*СЦЕНАРИЙ							  */{СЦЕНАРИЙ}
+/*ПЕРИОД							  */@RELATIVE("Итого год",0)
+/*ВЕРСИЯ 							  */{ВЕРСИЯ}
+/*ГОД 								  */{ГОД}
+/*ПРОДУКЦИЯ 						  */@RELATIVE("Услуги автоцеха",0), "ПРОДУКЦИЯ ТЧМ и ТЧМС"
+/*ПОКАЗАТЕЛИ 						   */"Сумма на ед"
+/*МВЗ 									*/@RELATIVE("№12. Автохозяйство",0 )
+)
+
+
+CLEARBLOCK ALL;
+
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="2" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="3" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="02.12.02.Нормативы расхода сырья и топлива СПЦ" product="Planning">
+      <property name="description">Нормативы расхода сырья и топлива СПЦ</property>
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">02.12.02.Нормативы расхода сырья и топлива СПЦ</property>
+      <property name="enableNotifications">false</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <variable_references>
+        <variable_reference id="2" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">02.12.02.Нормативы расхода сырья и топлива СПЦ</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">02.12.02.Нормативы расхода сырья и топлива СПЦ</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">02.12.02.Нормативы расхода сырья и топлива СПЦ</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"80_Увеличение"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+  var NextM=2;
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+/*Зачиста данных в ККЦ для переноса количества   */
+
+FIX(
+/*ЦФО 								*/"ПЭО"
+/*ВАЛЮТА 							*/"RUR"
+/*КОНТРАГЕНТЫ 						*/"бу контрагента"
+/*МВЗ 								*/"Уч непрерывной разливки стали"
+/*НАПРАВЛЕНИЕ 						*/"Тов. пр-ция (сч 43)"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					*/"бу элемента затрат"
+/*ГОД								*/{ГОД}
+/*ВЕРСИЯ							*/{ВЕРСИЯ}
+/*ПЕРИОД							*/@RELATIVE("Всего год",0)
+/*СЦЕНАРИЙ							*/{СЦЕНАРИЙ}
+/*ВИД ЗАТРАТ						*/"бу видов затрат"
+/*ПРОЧЕЕ							*/"бу прочих справочников"
+/*МВЗ ПОЛУЧАТЕЛЬ					*/"бу МВЗ (пол-ль)"
+/*ПРОДУКЦИЯ							*/@Relative("Полуфабрикаты.",0 )
+/*СТАТЬИ							*/"бу статьи"
+/*СЧЕТА БАЛАНСА						*/"20_Выбытие"
+/*ПОКАЗАТЕЛИ						*/"Кол-во"
+)	 
+
+CLEARBLOCK ALL;
+
+
+ENDFIX
+
+/* Расчет количества на основе веденных данных по нормативам и количеству из производства СПЦ  */
+
+
+FIX(
+/*ЦФО 								*/"ПЭО"
+/*ВАЛЮТА 							*/"RUR"
+/*КОНТРАГЕНТЫ 						*/"бу контрагента"
+/*МВЗ 								*/
+/*НАПРАВЛЕНИЕ 						*/"бу направления"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					*/"бу элемента затрат"
+/*ГОД								*/{ГОД}
+/*ВЕРСИЯ							*/{ВЕРСИЯ}
+/*ПЕРИОД							*/@RELATIVE("Всего год",0)
+/*СЦЕНАРИЙ							*/{СЦЕНАРИЙ}
+/*ВИД ЗАТРАТ						*/
+/*ПРОЧЕЕ							*/"бу прочих справочников"
+/*МВЗ ПОЛУЧАТЕЛЬ					*/"бу МВЗ (пол-ль)"
+/*ПРОДУКЦИЯ							*/
+/*СТАТЬИ							*/
+/*СЧЕТА БАЛАНСА						*/"20_Начисление"
+/*ПОКАЗАТЕЛИ						*/
+)
+
+
+FIX(
+/*СТАТЬИ							*/"Сырье и основные материалы.","Отходы производства", "Сменный инструмент и оборудование"
+/*ВИД ЗАТРАТ						*/@Relative("Железорудное сырье",0 ), @Relative("Отходы",0 ), @Relative("Сменное оборудование и инструменты",0 ), @Relative("Энергоресурсы",0 ),@Relative("Топливо технологическое",0 )
+/*МВЗ 								*/"Прокатный стан 9501","Прокатный стан 9511"
+/*ПРОДУКЦИЯ							*/@Relative("Прокат",0 )
+/*ПОКАЗАТЕЛИ						*/
+)
+
+
+SET CREATENONMISSINGBLK ON;
+
+
+"Кол-во"(
+IF( (@ISMBR("Сырье и основные материалы.") AND @ISMBR(@Relative("Железорудное сырье",0 ))) OR  
+(@ISMBR("Отходы производства") AND @ISMBR(@Relative("Отходы",0 ))) OR
+(@ISMBR("Сменный инструмент и оборудование") AND @ISMBR(@Relative("Сменное оборудование и инструменты",0 )))OR
+(@ISMBR("Энергозатраты по переделу") AND @ISMBR(@Relative("Энергоресурсы",0 )))OR
+(@ISMBR("Энергозатраты по переделу") AND @ISMBR(@Relative("Топливо технологическое",0 )))
+
+
+)
+"Кол-во" = "Норма на ед." * "Кол-во с учетом годного выхода" -> "бу видов затрат"->"Тов. пр-ция (сч 43)"->"20_Выбытие"->"бу статьи";
+ENDIF
+)
+
+
+
+SET CREATENONMISSINGBLK OFF;
+CLEARBLOCK EMPTY;
+
+ENDFIX
+
+/* Перенос Кол-во в ККЦ  */
+
+
+FIX(
+/*СТАТЬИ							*/"Сырье и основные материалы."
+/*ВИД ЗАТРАТ						*/@Relative("Железорудное сырье",0 )
+/*МВЗ 								*/"Прокатный стан 9501","Прокатный стан 9511"
+/*ПРОДУКЦИЯ							*/@Relative("Прокат",0 )
+/*ПОКАЗАТЕЛИ						*/
+)
+
+
+
+"Кол-во" (@XWRITE("Кол-во"->"Заготовка кв  150 (низкоуглерод. ст)"->"СПЦ"->"Прокат",
+@LOOPBACK, "Кол-во с учетом годного выхода","бу видов затрат","Уч непрерывной разливки стали","Цехи п-п (сч 20;23;26)","Заготовка кв  150 (низкоуглерод. ст.)","20_Выбытие","бу статьи");) 
+
+"Кол-во" (@XWRITE("Кол-во"->"Заготовка кв  180 (низкоуглерод. ст)"->"СПЦ"->"Прокат",
+@LOOPBACK, "Кол-во с учетом годного выхода","бу видов затрат","Уч непрерывной разливки стали","Цехи п-п (сч 20;23;26)","Заготовка кв  180 (низкоуглерод. ст.)","20_Выбытие","бу статьи");) 
+
+"Кол-во" (@XWRITE("Кол-во"->"Заготовка кв 150 (углерод.ст)"->"СПЦ"->"Прокат",
+@LOOPBACK, "Кол-во с учетом годного выхода","бу видов затрат","Уч непрерывной разливки стали","Цехи п-п (сч 20;23;26)","Заготовка кв 150 (углерод.ст.)","20_Выбытие","бу статьи");) 
+
+"Кол-во" (@XWRITE("Кол-во"->"Заготовка кв 180 (углерод.ст)"->"СПЦ"->"Прокат",
+@LOOPBACK, "Кол-во с учетом годного выхода","бу видов затрат","Уч непрерывной разливки стали","Цехи п-п (сч 20;23;26)","Заготовка кв 180 (углерод.ст.)","20_Выбытие","бу статьи");) 
+
+"Кол-во" (@XWRITE("Кол-во"->"Заготовка кв  150 (низколег. ст)"->"СПЦ"->"Прокат",
+@LOOPBACK, "Кол-во с учетом годного выхода","бу видов затрат","Уч непрерывной разливки стали","Цехи п-п (сч 20;23;26)","Заготовка кв  150 (низколег. ст.)","20_Выбытие","бу статьи");) 
+
+"Кол-во" (@XWRITE("Кол-во"->"Заготовка кв  180 (низколег. ст)"->"СПЦ"->"Прокат",
+@LOOPBACK, "Кол-во с учетом годного выхода","бу видов затрат","Уч непрерывной разливки стали","Цехи п-п (сч 20;23;26)","Заготовка кв  180 (низколег. ст.)","20_Выбытие","бу статьи");) 
+
+"Кол-во" (@XWRITE("Кол-во"->"Заготовка кв  150 (высокоуглерод. ст)"->"СПЦ"->"Прокат",
+@LOOPBACK, "Кол-во с учетом годного выхода","бу видов затрат","Уч непрерывной разливки стали","Цехи п-п (сч 20;23;26)","Заготовка кв  150 (высокоуглерод. ст.)","20_Выбытие","бу статьи");) 
+
+"Кол-во" (@XWRITE("Кол-во"->"Заготовка кв  180 (высокоуглерод. ст)"->"СПЦ"->"Прокат",
+@LOOPBACK, "Кол-во с учетом годного выхода","бу видов затрат","Уч непрерывной разливки стали","Цехи п-п (сч 20;23;26)","Заготовка кв  180 (высокоуглерод. ст.)","20_Выбытие","бу статьи");) 
+
+"Кол-во" (@XWRITE("Кол-во"->"Заготовка кв  150 (констр. ст)"->"СПЦ"->"Прокат",
+@LOOPBACK, "Кол-во с учетом годного выхода","бу видов затрат","Уч непрерывной разливки стали","Цехи п-п (сч 20;23;26)","Заготовка кв  150 (констр. ст.)","20_Выбытие","бу статьи");) 
+
+"Кол-во" (@XWRITE("Кол-во"->"Заготовка кв  180 (констр. ст)"->"СПЦ"->"Прокат",
+@LOOPBACK, "Кол-во с учетом годного выхода","бу видов затрат","Уч непрерывной разливки стали","Цехи п-п (сч 20;23;26)","Заготовка кв  180 (констр. ст.)","20_Выбытие","бу статьи");) 
+
+ENDFIX
+
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

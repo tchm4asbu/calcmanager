@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="НАПРАВЛЕНИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">НАПРАВЛЕНИЕ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите Направление</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по направлениям"</value>
+    </variable>
+    <variable id="2" name="СЧЕТА_БАЛАНСА" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">СЧЕТА БАЛАНСА</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите счет баланса</property>
+      <property name="scope">ruleset</property>
+      <property name="useLastValue">true</property>
+      <value>"бу счета баланса"</value>
+    </variable>
+    <variable id="3" name="КОНТРАГЕНТЫ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">КОНТРАГЕНТЫ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите Контрагенты</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по контрагентам"</value>
+    </variable>
+    <variable id="4" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="5" name="ЭЛЕМЕНТЫ_ЗАТРАТ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">ЭЛЕМЕНТЫ_ЗАТРАТ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите Элемент затрат</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по элементам затрат"</value>
+    </variable>
+    <variable id="6" name="ЦФО" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Entity</property>
+      <property name="prompt_text">Выберите ЦФО</property>
+      <property name="scope">ruleset</property>
+      <value>"бу ЦФО"</value>
+    </variable>
+    <variable id="7" name="ПРОЧЕЕ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">ПРОЧЕЕ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите Прочие справочники</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по прочим справочникам"</value>
+    </variable>
+    <variable id="8" name="ВИД_ЗАТРАТ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">ВИД_ЗАТРАТ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите Вид затрат</property>
+      <property name="scope">ruleset</property>
+      <property name="useLastValue">true</property>
+      <value>"Итого по видам затрат"</value>
+    </variable>
+    <variable id="9" name="СТАТЬИ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">СТАТЬИ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите статью</property>
+      <property name="scope">ruleset</property>
+      <property name="useLastValue">true</property>
+      <value>"бу статьи"</value>
+    </variable>
+    <variable id="10" name="ПРОДУКЦИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">ПРОДУКЦИЯ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите Продукцию</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по продукции"</value>
+    </variable>
+    <variable id="11" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="12" name="ПЕРИОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Period</property>
+      <property name="prompt_text">Выберите период</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого год"</value>
+    </variable>
+    <variable id="13" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+    <variable id="14" name="МВЗ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">МВЗ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите МВЗ</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по МВЗ"</value>
+    </variable>
+    <variable id="15" name="ВАЛЮТА" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">ВАЛЮТА</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите валюту</property>
+      <property name="scope">ruleset</property>
+      <value>RUR</value>
+    </variable>
+    <variable id="16" name="МВЗ_ПОЛУЧАТЕЛЬ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">МВЗ ПОЛУЧАТЕЛЬ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите МВЗ - ПОЛУЧАТЕЛЯ</property>
+      <property name="scope">ruleset</property>
+      <value>"бу МВЗ (пол-ль)"</value>
+    </variable>
+    <variable id="17" name="ПОКАЗАТЕЛИ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">ПОКАЗАТЕЛИ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите Показатель</property>
+      <property name="scope">ruleset</property>
+      <value>Сумма</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="xx.Срез1_0" product="Planning">
+      <property name="description">Удаляет значение из  ячейки</property>
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">xx.Срез1_0</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <variable_references>
+        <variable_reference id="8" name="ВИД_ЗАТРАТ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="КОНТРАГЕНТЫ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="14" name="МВЗ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="16" name="МВЗ_ПОЛУЧАТЕЛЬ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">4</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="НАПРАВЛЕНИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">5</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="17" name="ПОКАЗАТЕЛИ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">6</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="10" name="ПРОДУКЦИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">7</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="7" name="ПРОЧЕЕ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">8</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="9" name="СТАТЬИ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">9</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="2" name="СЧЕТА_БАЛАНСА">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">10</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="6" name="ЦФО">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">11</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="5" name="ЭЛЕМЕНТЫ_ЗАТРАТ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">12</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="11" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">13</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="12" name="ПЕРИОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">14</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="13" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">15</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="15" name="ВАЛЮТА">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">16</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="4" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.Срез1_0</property>
+          <property name="seq">17</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"80_Увеличение"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+  var NextM=2;
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+FIX({ГОД})
+FIX({ВАЛЮТА})
+FIX({СЦЕНАРИЙ})
+FIX({ВЕРСИЯ})
+FIX(@ILDESCENDANTS({ВИД_ЗАТРАТ}),@RDESCENDANTS({ВИД_ЗАТРАТ}))
+FIX(@ILDESCENDANTS({МВЗ}))
+FIX(@ILDESCENDANTS({КОНТРАГЕНТЫ}))
+FIX(@ILDESCENDANTS({НАПРАВЛЕНИЯ}))
+FIX(@ILDESCENDANTS({ПРОДУКЦИЯ}),@RDESCENDANTS({ПРОДУКЦИЯ}))
+FIX(@ILDESCENDANTS({ПРОЧЕЕ}))
+FIX(@ILDESCENDANTS({ЦФО}))
+FIX(@ILDESCENDANTS({ЭЛЕМЕНТЫ_ЗАТРАТ}))
+FIX(@ILDESCENDANTS({СТАТЬИ}),@RDESCENDANTS({СТАТЬИ}))
+FIX(@ILDESCENDANTS({СЧЕТА_БАЛАНСА}),@RDESCENDANTS({СЧЕТА_БАЛАНСА}))
+FIX(@ILDESCENDANTS({МВЗ_ПОЛУЧАТЕЛЬ}))
+FIX(@ILDESCENDANTS({ПОКАЗАТЕЛИ}),@RDESCENDANTS({ПОКАЗАТЕЛИ}))
+FIX(@ILDESCENDANTS({ПЕРИОД}),@RDESCENDANTS({ПЕРИОД}))
+
+CLEARBLOCK ALL;
+
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

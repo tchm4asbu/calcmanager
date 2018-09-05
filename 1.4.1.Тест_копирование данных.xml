@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables></variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="1.4.1.Тест_копирование данных" product="Planning">
+      <property name="description">Реализация прочей продукции</property>
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">1.4.1.Тест_копирование данных</property>
+      <property name="enableNotifications">false</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+FIX(
+/*ПРОЧЕЕ 								*/"бу прочих справочников"
+/*ПРОДУКЦИЯ  							*/"Силикатный клей", @Relative("Раствор цементный", 0)
+/*НАПРАВЛЕНИЕ  							*/"Внутр рынок (Авто)"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ  						*/"бу элемента затрат"
+/*МВЗ ПОЛУЧАТЕЛЬ  						*/"бу МВЗ (пол-ль)"
+/*ВАЛЮТА  								*/"RUR"
+/*ПЕРИОД  								*/@Relative("Итого год", 0)
+/*КОНТРАГЕНТЫ  							*/"ООО Тулачермет-Сталь"
+/*ВЕРСИЯ	  							*/"Рабочая 1"
+/*ГОД  									*/"FY18"
+/*МВЗ  									*/"ТЧМ в целом", "ТЧМС в целом"
+/*СЦЕНАРИЙ  							*/"Проект"
+/*ВИД ЗАТРАТ 							*/"бу видов затрат"
+/*ЦФО  									*/"Упр по реал-ции прод-ции"
+/*СТАТЬИ  								*/
+/*ПОКАЗАТЕЛИ  							*/"Кол-во","Цена","Тариф","Сумма","Цена с охраной и ждт"
+/*СЧЕТА БАЛАНСА  						*/"62_ДЗ на начало","62_КЗ на начало","62_Реализация без НДС","Ставка НДС","62_Реализация с НДС","62_Оплата","62_ДЗ на конец"
+)
+
+DATACOPY "Реализация продукции вспомогательных цехов" TO "Поступления от прочей реализации";
+
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

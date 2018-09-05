@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ВИД_ЗАТРАТ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">ВИД_ЗАТРАТ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите Вид затрат</property>
+      <property name="scope">ruleset</property>
+      <property name="useLastValue">true</property>
+      <value>"Итого по видам затрат"</value>
+    </variable>
+    <variable id="2" name="СТАТЬИ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">СТАТЬИ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите статью</property>
+      <property name="scope">ruleset</property>
+      <property name="useLastValue">true</property>
+      <value>"бу статьи"</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="xx.СтатьяСметыВЗ" product="Planning">
+      <property name="description">Выводит в сообщение статью Сметы для выбранного ВЗ</property>
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">xx.СтатьяСметыВЗ</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <variable_references>
+        <variable_reference id="1" name="ВИД_ЗАТРАТ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.СтатьяСметыВЗ</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="2" name="СТАТЬИ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">xx.СтатьяСметыВЗ</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA["P0"(
+IF({ВИД_ЗАТРАТ}->{СТАТЬИ}->"Статья Сметы"<30 and {ВИД_ЗАТРАТ}->{СТАТЬИ}->"Статья Сметы">0)
+@RETURN(@CONCATENATE("Этому виду затрат соответсвует статья Калькуляции: ",
+@PerForScen(@CalcMgrIntegerToString({ВИД_ЗАТРАТ}->{СТАТЬИ}->"Статья Сметы"),/* Start Template:ТЧМ.Plan1.TPL_СтатьиФПСмета*/
+"1|Сырье и основные материалы.|2|Внутризаводское перемещение грузов.|3|КОММЕРЧЕСКИЕ РАСХОДЫ|4|Прочие расходы по цеху|5|Содержание основных фондов|6|Товары|7|Топливо технологическое.|8|Энергозатраты на технологию|9|Отходы производства|10|Сырье.|11|Прочие затраты на содержание|12|Материалы на технологические цели.|13|Работы и услуги производственного характера|14|Прочие выплаты (гр)|15|Таможенная процедура|16|Транспортные услуги|17|Услуги таможенного брокера|18|Оплата налогов|19|Топливо.|20|Покупка ТМЦ и услуг для перепродажи|21|Энергоресурсы_|22|бу статьи|23|Текущие ремонты|24|Некапитализируемые капитальные ремонты|25|Доб.материалы и флюсы|26|Сменный инструмент и оборудование|27|Огнеупоры.|28|Техническое обслуживание.|29|Энергозатраты по переделу"/* End Template:ТЧМ.Plan1.TPL_СтатьиФПСмета*/
+)
+),ERROR);
+ELSE
+@RETURN("Для выбранного ВЗ нет сопоставленной статьи из Калькуляции",ERROR);
+ENDIF)]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

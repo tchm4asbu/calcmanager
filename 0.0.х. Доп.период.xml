@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="Доп_период" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Period</property>
+      <property name="prompt_text">Период</property>
+      <property name="scope">ruleset</property>
+      <property name="useLastValue">true</property>
+      <value>"Накопленый итог"</value>
+      <limits type="list">
+        <property name="value">"Итого год","Накопленый итог"</property>
+      </limits>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="0.0.х. Доп.период" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">0.0.х. Доп.период</property>
+      <variable_references>
+        <variable_reference id="1" name="Доп_период">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.х. Доп.период</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[FIX({Доп_период})
+
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

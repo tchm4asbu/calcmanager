@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="СПИСОК_ПЕРИОД" product="Planning" type="members" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">ПЕРИОД</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите 1 или несколько месяцев</property>
+      <property name="scope">ruleset</property>
+      <property name="useLastValue">true</property>
+      <value>"Всего год"</value>
+    </variable>
+    <variable id="2" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="3" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="4" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+    <variable id="5" name="МВЗ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">МВЗ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите МВЗ</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по МВЗ"</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="0.0.х.Распределяем_АУР_на_ЭЗ" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">0.0.х.Распределяем_АУР_на_ЭЗ</property>
+      <variable_references>
+        <variable_reference id="3" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.х.Распределяем_АУР_на_ЭЗ</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="2" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.х.Распределяем_АУР_на_ЭЗ</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="5" name="МВЗ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.х.Распределяем_АУР_на_ЭЗ</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="СПИСОК_ПЕРИОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.х.Распределяем_АУР_на_ЭЗ</property>
+          <property name="seq">4</property>
+          <property name="type">4</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="4" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.х.Распределяем_АУР_на_ЭЗ</property>
+          <property name="seq">5</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"80_Увеличение"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+  var NextM=2;
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+/*АГРЕГИРУЕМ */
+
+
+FIX(
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                */
+/*ЦФО                            */"ПЭО"
+/*КОНТРАГЕНТЫ                    */"бу контрагента"
+/*НАПРАВЛЕНИЕ                    */"бу направления"
+/*ПРОЧЕЕ                       	 */
+/*СЧЕТА БАЛАНСА               	 */"26_Поступление"
+/*МВЗ ПОЛУЧАТЕЛЬ                 */   
+/*ВАЛЮТА                         */
+/*ВИД ЗАТРАТ                     */
+/*СТАТЬИ                        */
+/*СЦЕНАРИЙ                       */{СЦЕНАРИЙ}
+/*ПЕРИОД                         */@ILDESCENDANTS({СПИСОК_ПЕРИОД}) and @RELATIVE("Всего год",0)
+/*ВЕРСИЯ                          */{ВЕРСИЯ}
+/*ГОД                              */{ГОД}
+/*ПРОДУКЦИЯ                       */"бу вида продукции"
+/*ПОКАЗАТЕЛИ                       */"Сумма","Кол-во"
+/*МВЗ                             */
+)
+
+
+
+
+FIX(
+/*МВЗ                             */@RELATIVE({МВЗ},0) and @LIST(/*тчмс*/"управление",/*тчм*/"№9. Цех связи","№11. АСС","№13. ЦЛХТиТК","№20. Управление","№22. ИТЦ","№23. Цех питания","№25. ЦЛА","№26. Хоз цех","№29. ЦОП")
+)
+
+FIXPARALLEL(8,@DESCENDANTS("Всего по первичным элементам затрат."))
+
+
+FIX(
+/*ПРОЧЕЕ                       	 */@Relative("Всего по прочим справочникам в смете", 0)
+/*ВАЛЮТА                        */"RUR"
+/*СТАТЬИ                        */@RELATIVE("ЦЕХОВАЯ СЕБЕСТОИМОСТЬ",0)
+/*ВАЛЮТА                         */"RUR"
+/*ВИД ЗАТРАТ                     */@RELATIVE("Всего по видам затрат",0)
+/*МВЗ ПОЛУЧАТЕЛЬ                 */
+)
+AGG("МВЗ ПОЛУЧАТЕЛЬ");
+ENDFIX
+
+FIX(
+/*ПРОЧЕЕ                       	 */@Relative("Всего по прочим справочникам в смете", 0)
+/*ВАЛЮТА                        */"RUR"
+/*СТАТЬИ                        */@RELATIVE("ЦЕХОВАЯ СЕБЕСТОИМОСТЬ",0)
+/*ВАЛЮТА                         */"RUR"
+/*ВИД_ЗАТРАТ                     */
+/*МВЗ ПОЛУЧАТЕЛЬ                 */"МВЗ Получатели"
+)
+AGG("ВИД_ЗАТРАТ");
+ENDFIX
+
+FIX(
+/*ПРОЧЕЕ                       	 */
+/*ВАЛЮТА                        */"RUR"
+/*СТАТЬИ                        */@RELATIVE("ЦЕХОВАЯ СЕБЕСТОИМОСТЬ",0)
+/*ВАЛЮТА                         */"RUR"
+/*ВИД_ЗАТРАТ                     */"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*МВЗ ПОЛУЧАТЕЛЬ                 */"МВЗ Получатели"
+)
+AGG("ПРОЧЕЕ");
+ENDFIX
+
+
+
+ENDFIXPARALLEL
+
+FIX(
+/*ПРОЧЕЕ                       	 */"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                */"Технически элемент"
+/*ВАЛЮТА                        */"RUR"
+/*СТАТЬИ                        */
+/*ВИД ЗАТРАТ                     */"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*МВЗ ПОЛУЧАТЕЛЬ                 */"МВЗ получатели"
+)
+
+FIXPARALLEL(8,@DESCENDANTS("ЦЕХОВАЯ СЕБЕСТОИМОСТЬ"))
+
+CLEARBLOCK ALL;
+
+
+ENDFIXPARALLEL
+ENDFIX
+
+FIX(
+/*ПРОЧЕЕ                       	 */"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                */@RELATIVE("Всего по первичным элементам затрат.",0)
+/*ВАЛЮТА                        */
+/*СТАТЬИ                        */
+/*ВИД ЗАТРАТ                     */"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*МВЗ ПОЛУЧАТЕЛЬ                 */"МВЗ получатели"
+)
+
+FIXPARALLEL(8,@DESCENDANTS("ЦЕХОВАЯ СЕБЕСТОИМОСТЬ"))
+
+"RUR"("RUR"->"Технически элемент"="RUR"+"RUR"->"Технически элемент";)
+
+
+ENDFIXPARALLEL
+ENDFIX
+
+
+FIX(
+/*ПРОЧЕЕ                       	 */"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС"
+								"Прочие МВЗ"
+/*ВАЛЮТА                        */"RUR"
+/*СТАТЬИ                        */"бу статьи"
+/*ВИД ЗАТРАТ                    */"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*МВЗ ПОЛУЧАТЕЛЬ                */"МВЗ получатели"
+)
+
+FIXPARALLEL(8,@DESCENDANTS("Всего по первичным элементам затрат."))
+CLEARBLOCK ALL;
+ENDFIXPARALLEL
+
+ENDFIX
+
+
+FIX(
+/*ПРОЧЕЕ                       	 */"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                */@RELATIVE("Всего по первичным элементам затрат.",0)
+/*ВАЛЮТА                        */
+/*СТАТЬИ                        */@RELATIVE("ЦЕХОВАЯ СЕБЕСТОИМОСТЬ",0)
+/*ВИД ЗАТРАТ                     */"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*МВЗ ПОЛУЧАТЕЛЬ                 */"МВЗ получатели"
+)
+
+
+"RUR"("RUR"->"Прочие МВЗ"->"бу статьи"="RUR"+"RUR"->"Прочие МВЗ"->"бу статьи";)
+
+
+
+ENDFIX
+
+ENDFIX
+
+ENDFIX
+/*Создаем блоки  */
+FIX(
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                */
+/*ЦФО                            */"ПЭО"
+/*КОНТРАГЕНТЫ                    */"бу контрагента"
+/*НАПРАВЛЕНИЕ                    */"бу направления"
+/*ПРОЧЕЕ                           */"бу прочих справочников"
+/*СЧЕТА БАЛАНСА                   */
+/*МВЗ ПОЛУЧАТЕЛЬ                 */@RELATIVE(@MEMBER(@CONCATENATE(@NAME({МВЗ})," (пол-ль)")),0)   
+/*ВАЛЮТА                        */"RUR"
+/*ВИД ЗАТРАТ                     */"Общехозяйственные расходы"
+/*СТАТЬИ                        */"УПРАВЛЕНЧЕСКИЕ РАСХОДЫ"
+/*СЦЕНАРИЙ                       */{СЦЕНАРИЙ}
+/*ПЕРИОД                         */@ILDESCENDANTS({СПИСОК_ПЕРИОД}) and @RELATIVE("Всего год",0)
+/*ВЕРСИЯ                          */{ВЕРСИЯ}
+/*ГОД                              */{ГОД}
+/*ПРОДУКЦИЯ                       */
+/*ПОКАЗАТЕЛИ                       */
+/*МВЗ                             */@RELATIVE({МВЗ},0)
+)
+
+FIX(
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                */"бу элемента затрат"
+/*ПОКАЗАТЕЛИ                       */"Сумма"
+)
+
+FIXPARALLEL(8,@DESCENDANTS("Всего по продукции"))/*
+%Template(name:="TPL_Тиражирование ПР_ВЗ на ЭЗ",application:="ТЧМ",plantype:="Plan1",dtps:=())
+"ЦЕХОВАЯ СЕБЕСТОИМОСТЬ ТП" = @ALLOCATE("ЦЕХОВАЯ СЕБЕСТОИМОСТЬ ТП"->"Технически элемент",@DESCENDANTS("Всего по первичным элементам затрат."),"20_Начисление"->"ПРОДУКЦИЯ ТЧМ и ТЧМС"-> "ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС"->"МВЗ Получатели"->"Прочие МВЗ"->"Общехозяйственные расходы"->"УПРАВЛЕНЧЕСКИЕ РАСХОДЫ",,share);*/
+"20_Начисление" = @ALLOCATE("20_Начисление"->"бу элемента затрат",@DESCENDANTS("Всего по первичным элементам затрат."),"26_Поступление"->"бу вида продукции"->"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС"->"МВЗ Получатели"->"Прочие МВЗ"->"бу статьи"->"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС",,share);
+ENDFIXPARALLEL
+
+ENDFIX
+
+FIX(
+/*СЧЕТА БАЛАНСА                   */"20_Начисление"
+/*ПРОДУКЦИЯ                       */@Relative("Всего по продукции",0)
+)
+
+FIXPARALLEL(8,@DESCENDANTS("Всего по первичным элементам затрат."))
+"Сумма"=#missing;
+"Сумма"(
+      "Сумма"->"бу элемента затрат"
+        *"Сумма"->"26_Поступление"->"бу вида продукции"->"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС"->"МВЗ получатели"->"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"->@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->"ЦЕХОВАЯ СЕБЕСТОИМОСТЬ"
+        /"Сумма"->"26_Поступление"->"бу вида продукции"->"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС"->"МВЗ получатели"->"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"->"Технически элемент"->@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->"ЦЕХОВАЯ СЕБЕСТОИМОСТЬ";
+)
+
+"Кол-во"(
+      "Сумма"->"бу элемента затрат"
+        /"Сумма"->"26_Поступление"->"бу вида продукции"->"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС"->"МВЗ получатели"->"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"->"Технически элемент"->@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->"ЦЕХОВАЯ СЕБЕСТОИМОСТЬ"
+        *"Кол-во"->"26_Поступление"->"бу вида продукции"->"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС"->"МВЗ получатели"->"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"->@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->"ЦЕХОВАЯ СЕБЕСТОИМОСТЬ";
+)
+
+
+
+ENDFIXPARALLEL
+
+ENDFIX
+
+ENDFIX
+/*ЧИСТИМ */
+
+
+FIX(
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                */
+/*ЦФО                            */"ПЭО"
+/*КОНТРАГЕНТЫ                    */"бу контрагента"
+/*НАПРАВЛЕНИЕ                    */"бу направления"
+/*ПРОЧЕЕ                       	 */
+/*СЧЕТА БАЛАНСА               	 */"26_Поступление"
+/*МВЗ ПОЛУЧАТЕЛЬ                 */   
+/*ВАЛЮТА                         */
+/*ВИД ЗАТРАТ                     */
+/*СТАТЬИ                        */
+/*СЦЕНАРИЙ                       */{СЦЕНАРИЙ}
+/*ПЕРИОД                         */@ILDESCENDANTS({СПИСОК_ПЕРИОД}) and @RELATIVE("Всего год",0)
+/*ВЕРСИЯ                          */{ВЕРСИЯ}
+/*ГОД                              */{ГОД}
+/*ПРОДУКЦИЯ                       */"бу вида продукции"
+/*ПОКАЗАТЕЛИ                       */"Сумма","Кол-во"
+/*МВЗ                             */
+)
+
+
+
+FIX(
+/*МВЗ                           */@RELATIVE({МВЗ},0) and @LIST(/*тчмс*/"управление",/*тчм*/"№9. Цех связи","№11. АСС","№13. ЦЛХТиТК","№20. Управление","№22. ИТЦ","№23. Цех питания","№25. ЦЛА","№26. Хоз цех","№29. ЦОП")
+)
+FIXPARALLEL(8,@DESCENDANTS("Всего по первичным элементам затрат."))
+
+
+FIX(
+/*ПРОЧЕЕ                       	 */"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС",@Relative("Итого по прочим справочникам", 0)
+									"Прочие МВЗ"
+/*ВАЛЮТА                        */"RUR"
+/*СТАТЬИ                        */@RELATIVE("ЦЕХОВАЯ СЕБЕСТОИМОСТЬ",0),"бу статьи"
+/*ВИД ЗАТРАТ                    */"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС",@RELATIVE("Всего по видам затрат",0)
+/*МВЗ ПОЛУЧАТЕЛЬ                */"МВЗ получатели"
+)
+CLEARBLOCK ALL;
+ENDFIX
+
+
+ENDFIXPARALLEL
+
+FIX(
+/*ПРОЧЕЕ                       	 */"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС",
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                */"Технически элемент"
+/*ВАЛЮТА                        */"RUR"
+/*СТАТЬИ                        */@RELATIVE("ЦЕХОВАЯ СЕБЕСТОИМОСТЬ",0)
+/*ВИД ЗАТРАТ                    */"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*МВЗ ПОЛУЧАТЕЛЬ                */"МВЗ получатели"
+)
+CLEARBLOCK ALL;
+ENDFIX
+
+ENDFIX
+
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="2" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="3" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+    <variable id="4" name="МВЗ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">МВЗ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите МВЗ</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по МВЗ"</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="9.4.Бюджет займов выданных" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">9.4.Бюджет займов выданных</property>
+      <variable_references>
+        <variable_reference id="2" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">9.4.Бюджет займов выданных</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">9.4.Бюджет займов выданных</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="4" name="МВЗ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">9.4.Бюджет займов выданных</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">9.4.Бюджет займов выданных</property>
+          <property name="seq">4</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"80_Увеличение"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+  var NextM=2;
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+FIX                            
+(/*ВИД ЗАТРАТ                        */"бу видов затрат"
+/*МВЗ                                */
+/*ПРОДУКЦИЯ                          */"бу вида продукции"
+/*МВЗ ПОЛУЧАТЕЛЬ                     */"бу МВЗ (пол-ль)"
+/*ПОКАЗАТЕЛИ                         */"Сумма"
+/*СТАТЬИ                             */"бу статьи"
+/*ЦФО                                */"Финансовый отд"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                    */"бу элемента затрат"
+/*ВЕРСИЯ                             */{ВЕРСИЯ}
+/*ГОД                                */{ГОД}
+/*НАПРАВЛЕНИЕ      */@RELATIVE("Всего по срочности",0)
+/*ПРОЧЕЕ                             */"Займы выданные."
+/*ПЕРИОД                             */@RELATIVE("Итого год",0)
+/*СЦЕНАРИЙ                           */{СЦЕНАРИЙ}
+/*КОНТРАГЕНТЫ                        */@RELATIVE("Всего по контрагентам",0)
+/*ВАЛЮТА                             */
+/*СЧЕТА БАЛАНСА                      */
+)
+
+FIX(
+/*МВЗ                                */(@LIST("ТЧМ в целом","ТЧМС в целом") and @RELATIVE({МВЗ},0))
+)
+
+FIX( 
+/*СЧЕТА БАЛАНСА                       */"58_Ост на конец (+/-)","58_ДЗ/КЗ (+/-) по % на конец",
+"58_ДЗ/КЗ (+/-) по % на начало","58_Начисление процентов","58_Оплата процентов","58_Ост на начало (+/-)","58_Выдача займа",
+"58_Погашение займа выданного",
+"58_Курс разницы (+/-)","58_Рекласс по срочности (+/-)"
+
+)
+"Рубль (расчет)";
+ENDFIX
+
+/* akhodev - Добавил расчёт остатка на начало как значение остатка на конец из предыдущего месяца */
+FIX(
+/*ВАЛЮТА                             */@RELATIVE("Валюты ввода",0),"Рубль (расчет)"
+)
+"58_Ост на начало (+/-)"(
+IF(@ISMBR("Февраль":"Декабрь"))
+
+"58_Ост на начало (+/-)" = @PRIOR("58_Ост на начало (+/-)") + @PRIOR("58_Выдача займа") - @PRIOR("58_Погашение займа выданного") - @PRIOR("58_Курс разницы (+/-)") - @PRIOR("58_Рекласс по срочности (+/-)");
+
+ENDIF;
+)
+
+"58_ДЗ/КЗ (+/-) по % на начало"(
+IF(@ISMBR("Февраль":"Декабрь"))
+
+"58_ДЗ/КЗ (+/-) по % на начало" = @PRIOR("58_ДЗ/КЗ (+/-) по % на начало") + @PRIOR("58_Начисление процентов") - @PRIOR("58_Оплата процентов");
+
+ENDIF;
+)
+ENDFIX
+
+
+FIX(
+/*ВАЛЮТА                             */@RELATIVE("Валюты ввода",0),"Рубль (расчет)"
+)
+
+
+"58_Ост на конец (+/-)"(
+IF("58_Ост на начало (+/-)"+"58_Выдача займа"-"58_Погашение займа выданного"-"58_Курс разницы (+/-)"-"58_Рекласс по срочности (+/-)"
+<>#missing)
+"58_Ост на конец (+/-)"=@CREATEBLOCK("58_Ост на начало (+/-)");
+"58_Ост на конец (+/-)"=@CREATEBLOCK("58_Выдача займа");
+"58_Ост на конец (+/-)"=@CREATEBLOCK("58_Погашение займа выданного");
+"58_Ост на конец (+/-)"=@CREATEBLOCK("58_Курс разницы (+/-)");
+"58_Ост на конец (+/-)"=@CREATEBLOCK("58_Рекласс по срочности (+/-)");
+
+"58_Ост на конец (+/-)"="58_Ост на начало (+/-)"+"58_Выдача займа"-"58_Погашение займа выданного"-"58_Курс разницы (+/-)"-"58_Рекласс по срочности (+/-)";
+else
+"58_Ост на конец (+/-)"=#missing;
+endif
+)
+
+"58_ДЗ/КЗ (+/-) по % на конец"(
+IF("58_ДЗ/КЗ (+/-) по % на начало"+"58_Начисление процентов"-"58_Оплата процентов"
+<>#missing)
+"58_ДЗ/КЗ (+/-) по % на конец"=@CREATEBLOCK("58_ДЗ/КЗ (+/-) по % на начало");
+"58_ДЗ/КЗ (+/-) по % на конец"=@CREATEBLOCK("58_Начисление процентов");
+"58_ДЗ/КЗ (+/-) по % на конец"=@CREATEBLOCK("58_Оплата процентов");
+
+"58_ДЗ/КЗ (+/-) по % на конец"="58_ДЗ/КЗ (+/-) по % на начало"+"58_Начисление процентов"-"58_Оплата процентов";
+else
+"58_ДЗ/КЗ (+/-) по % на конец"=#missing;
+
+endif
+
+
+)
+
+ENDFIX
+
+
+ENDFIX
+
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

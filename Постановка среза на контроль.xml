@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="2" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="3" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+    <variable id="4" name="ВАЛЮТА" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">ВАЛЮТА</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите валюту</property>
+      <property name="scope">ruleset</property>
+      <value>RUR</value>
+    </variable>
+    <variable id="5" name="ПОКАЗАТЕЛИ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">ПОКАЗАТЕЛИ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите Показатель</property>
+      <property name="scope">ruleset</property>
+      <value>Сумма</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="Постановка среза на контроль" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">Постановка среза на контроль</property>
+      <property name="enableNotifications">false</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <variable_references>
+        <variable_reference id="4" name="ВАЛЮТА">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">Постановка среза на контроль</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="2" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">Постановка среза на контроль</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">Постановка среза на контроль</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="5" name="ПОКАЗАТЕЛИ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">Постановка среза на контроль</property>
+          <property name="seq">4</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">Постановка среза на контроль</property>
+          <property name="seq">5</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"80_Увеличение"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+  var NextM=2;
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	{ГОД}
+/* ВЕРСИЯ							*/	{ВЕРСИЯ}
+/* СЦЕНАРИЙ							*/	{СЦЕНАРИЙ}
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"20_Начисление"
+/* СТАТЬИ							*/	"бу статьи"
+/* ПОКАЗАТЕЛИ						*/	
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ						*/	"бу направления"
+/* ЭЛЕМЕНТЫ ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+SET CREATENONMISSINGBLK ON;
+
+/*экспортируем данные в козначейство  */
+
+RUNJAVA com.oracle.essbase.cdf.J_RunSQLQuery
+/* SQL Connection name (from rdb.properties) */ 	
+"ProdTargetSQLTCHM"
+/* SQL Query */
+        @CONCATENATE(
+		@CONCATENATE("DELETE FROM HYP_TCHM.CONTROL_RECORDS WHERE USER_NAME = VGorbuzov AND POV ='",
+		@CONCATENATE(
+        @CONCATENATE(
+        @CONCATENATE(
+        @CONCATENATE(
+		@CONCATENATE(@CONCATENATE(@NAME({СЦЕНАРИЙ}),"->"),@NAME(@CURRMBR("СЧЕТА БАЛАНСА"))),
+		@CONCATENATE(@CONCATENATE("->",@NAME(@CURRMBR("ЦФО"))),@CONCATENATE("->",@NAME(@CURRMBR("ПЕРИОД"))))),
+        @CONCATENATE(@CONCATENATE(@CONCATENATE("->",@NAME({ВЕРСИЯ})),@CONCATENATE("->",@NAME({ГОД}))),
+		@CONCATENATE(@CONCATENATE("->",@NAME({ВАЛЮТА})),@CONCATENATE("->",@NAME(@CURRMBR("ВИД_ЗАТРАТ")))))),
+        @CONCATENATE(
+		@CONCATENATE(
+		@CONCATENATE(@CONCATENATE("->",@NAME(@CURRMBR("КОНТРАГЕНТЫ"))),@CONCATENATE("->",@NAME(@CURRMBR("МВЗ")))),
+		@CONCATENATE(@CONCATENATE("->",@NAME(@CURRMBR("НАПРАВЛЕНИЯ"))),@CONCATENATE("->",@NAME({ПОКАЗАТЕЛИ})))),
+        @CONCATENATE(@CONCATENATE(
+		@NAME(@CONCATENATE("->",@CURRMBR("ПРОДУКЦИЯ"))),@CONCATENATE("->",@NAME(@CURRMBR("ПРОЧЕЕ")))),
+		@CONCATENATE(@CONCATENATE("->",@NAME(@CURRMBR("СТАТЬИ"))),@CONCATENATE("->",@NAME(@CURRMBR("ЭЛЕМЕНТЫ ЗАТРАТ"))))))),
+        @CONCATENATE("->",@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ"))))),"'")
+	/* Debug mode */
+	"true"
+;
+
+
+
+
+SET CREATENONMISSINGBLK OFF;
+
+ ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

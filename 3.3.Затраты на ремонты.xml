@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="2" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="3" name="ПЕРИОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Period</property>
+      <property name="prompt_text">Выберите период</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого год"</value>
+    </variable>
+    <variable id="4" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+    <variable id="5" name="МВЗ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">МВЗ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите МВЗ</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по МВЗ"</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="3.3.Затраты на ремонты" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">3.3.Затраты на ремонты</property>
+      <variable_references>
+        <variable_reference id="2" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">3.3.Затраты на ремонты</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">3.3.Затраты на ремонты</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="ПЕРИОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">3.3.Затраты на ремонты</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="4" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">3.3.Затраты на ремонты</property>
+          <property name="seq">4</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="5" name="МВЗ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">3.3.Затраты на ремонты</property>
+          <property name="seq">5</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"80_Увеличение"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+  var NextM=2;
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+FIX(
+
+/*СЧЕТА БАЛАНСА							*/"20_Начисление","29_Поступление","26_Поступление"
+/*ВИД ЗАТРАТ							*/"Рем.работы ЦРМО","Рем. работы уч. ремонта метал-ого обор-я","Рем. работы уч. ремонтно-строительных работ","Рем. работы уч. ремонта ДП-1","Рем.работы ТЭРЦ","Рем. работы Электроцеха"
+/*КОНТРАГЕНТЫ							*/"бу контрагента"
+/*ЦФО									*/"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ						*/"бу элемента затрат"
+/*ВАЛЮТА								*/"RUR"
+/*СЦЕНАРИЙ								*/{СЦЕНАРИЙ}
+/*ГОД									*/{ГОД}
+/*ВЕРСИЯ								*/{ВЕРСИЯ}
+/*ПЕРИОД								*/@RELATIVE({ПЕРИОД},0)
+/*МВЗ									*/@RELATIVE({МВЗ},0)
+/*МВЗ ПОЛУЧАТЕЛЬ						*/"Выполнение работ (пол-ль)","Уч ремонтов метал.оборудования (пол-ль)","Уч ремонтно-строительных работ (пол-ль)","Уч ремонта ДП1 (пол-ль)","Ремонтные работы (пол-ль)","Уч ремонтов электрооборудования цехов предприятия (пол-ль)"
+/*ПРОДУКЦИЯ								*/
+/*ПРОЧЕЕ								*/
+/*СТАТЬИ								*/@RELATIVE("РАСХОДЫ ПО ПЕРЕДЕЛУ",0)
+/*НАПРАВЛЕНИЕ							*/"бу направления"
+/*ПОКАЗАТЕЛИ							*/"Кол-во"
+)
+
+FIX(
+/*ПРОЧЕЕ								*/@RELATIVE("Всего по группам ОС и НМА",0)
+)
+
+AGG("ПРОДУКЦИЯ");
+
+ENDFIX 
+
+FIX(
+/*ПРОЧЕЕ								*/"ПРОДУКЦИЯ ТЧМ и ТЧМС"
+)
+
+AGG("ПРОЧЕЕ");
+
+ENDFIX 
+ENDFIX 
+
+
+
+
+FIX(
+/*СЧЕТА БАЛАНСА					*/"20_Начисление","29_Поступление","26_Поступление"
+/*ВИД ЗАТРАТ					*/
+/*КОНТРАГЕНТЫ					*/"бу контрагента"
+/*ЦФО							*/"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ				*/"бу элемента затрат"
+/*ВАЛЮТА						*/"RUR"
+/*СЦЕНАРИЙ						*/{СЦЕНАРИЙ}
+/*ГОД							*/{ГОД}
+/*ВЕРСИЯ						*/{ВЕРСИЯ}
+/*ПЕРИОД						*/@RELATIVE({ПЕРИОД},0)
+/*МВЗ							*/@RELATIVE({МВЗ},0)
+/*ПРОДУКЦИЯ						*/"ПРОДУКЦИЯ ТЧМ и ТЧМС"
+/*ПРОЧЕЕ 						*/"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС"
+/*СТАТЬИ 						*/@RELATIVE("РАСХОДЫ ПО ПЕРЕДЕЛУ",0)
+/*НАПРАВЛЕНИЕ						*/"бу направления"
+/*ПОКАЗАТЕЛЬ					*/
+)
+
+/*Копируем на ПП ЦРМО					*/
+
+FIX(
+/*МВЗ ПОЛУЧАТЕЛЬ				*/"Выполнение работ (пол-ль)"
+/*ВИД ЗАТРАТ					*/"Рем.работы ЦРМО"
+)
+"Кол-во"(
+IF(@ISMBR(@LIST(@RELATIVE("№2. Доменный цех",0),"№1. Аглоцех","Уч пр-ва металлоконструкций")))
+@XWRITE( "Кол-во"->"РАСХОДЫ ПО ПЕРЕДЕЛУ",@LOOPBACK,"Кол-во с учетом годного выхода","Рем. работы цехам","Выполнение работ","ОГМ",@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"), "бу статьи", "20_Выбытие","Цехи п-п (сч 20;23;26)", "бу видов затрат","бу прочих справочников");
+ELSEIF(@ISMBR(@LIST("БО Металлург.","ФОК","Спортивно-стрелковый стенд","№23. Цех питания")))
+@XWRITE( "Кол-во"->"РАСХОДЫ ПО ПЕРЕДЕЛУ",@LOOPBACK,"Кол-во с учетом годного выхода","Рем. работы цехам","Выполнение работ","ОГМ",@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"), "бу статьи", "20_Выбытие","Соц. объекты (сч 29)", "бу видов затрат","бу прочих справочников");
+ENDIF
+)
+ENDFIX 
+
+/*Копируем на ПП ЦКРО Уч ремонтов метал.оборудования	*/
+FIX(
+/*МВЗ ПОЛУЧАТЕЛЬ				*/"Уч ремонтов метал.оборудования (пол-ль)"
+/*ВИД ЗАТРАТ					*/"Рем. работы уч. ремонта метал-ого обор-я"
+)
+
+
+
+"Кол-во"(
+IF(NOT @ISMBR(@LIST("БО Металлург.","ФОК","Спортивно-стрелковый стенд","№23. Цех питания")))
+@XWRITE( "Кол-во"->"РАСХОДЫ ПО ПЕРЕДЕЛУ",@LOOPBACK,"Кол-во с учетом годного выхода","Рем. работы уч. ремонта метал-ого оборудования","Уч ремонтов метал.оборудования","ОГМ",@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"), "бу статьи", "20_Выбытие","Цехи п-п (сч 20;23;26)", "бу видов затрат","бу прочих справочников","RUR");
+ELSEIF(@ISMBR(@LIST("БО Металлург.","ФОК","Спортивно-стрелковый стенд","№23. Цех питания")))
+@XWRITE( "Кол-во"->"РАСХОДЫ ПО ПЕРЕДЕЛУ",@LOOPBACK,"Кол-во с учетом годного выхода","Рем. работы уч. ремонта метал-ого оборудования","Уч ремонтов метал.оборудования","ОГМ",@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"), "бу статьи", "20_Выбытие","Соц. объекты (сч 29)", "бу видов затрат","бу прочих справочников","RUR");
+ENDIF
+)
+ENDFIX
+
+/*Копируем на ПП ЦКРО Рем. работы уч. ремонтно-строительных работ	*/
+
+FIX(
+/*МВЗ ПОЛУЧАТЕЛЬ				*/"Уч ремонтно-строительных работ (пол-ль)"
+/*ВИД ЗАТРАТ					*/"Рем. работы уч. ремонтно-строительных работ"
+)
+
+/*бу видов затрат->Уч ремонтно-строительных работ->бу контрагента->Всего по направлениям списания->Рем. работы уч. ремонтно-строительных работ.->бу прочих справочников->ОГМ->бу элемента затрат->бу статьи->20_Выбытие->Итого по МВЗ (пол-ль)->Кол-во с учетом годного выхода->RUR
+*/
+
+
+"Кол-во"(
+IF(NOT @ISMBR(@LIST("БО Металлург.","ФОК","Спортивно-стрелковый стенд","№23. Цех питания")))
+@XWRITE( "Кол-во"->"РАСХОДЫ ПО ПЕРЕДЕЛУ",@LOOPBACK,"Кол-во с учетом годного выхода","Рем. работы уч. ремонтно-строительных работ.","Уч ремонтно-строительных работ","ОГМ",@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"), "бу статьи", "20_Выбытие","Цехи п-п (сч 20;23;26)", "бу видов затрат","бу прочих справочников","RUR");
+ELSEIF(@ISMBR(@LIST("БО Металлург.","ФОК","Спортивно-стрелковый стенд","№23. Цех питания")))
+@XWRITE( "Кол-во"->"РАСХОДЫ ПО ПЕРЕДЕЛУ",@LOOPBACK,"Кол-во с учетом годного выхода","Рем. работы уч. ремонтно-строительных работ.","Уч ремонтно-строительных работ","ОГМ",@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"), "бу статьи", "20_Выбытие","Соц. объекты (сч 29)", "бу видов затрат","бу прочих справочников","RUR");
+ENDIF
+)
+ENDFIX
+
+
+/*Копируем на ПП ЦКРО Уч ремонта ДП1	*/
+FIX(
+/*МВЗ ПОЛУЧАТЕЛЬ				*/"Уч ремонта ДП1 (пол-ль)"
+/*ВИД ЗАТРАТ					*/"Рем. работы уч. ремонта ДП-1"
+)
+
+"Кол-во"(
+
+IF(@ISMBR("ДП1") OR @ISMBR("ОПР ДП")
+)
+@XWRITE( "Кол-во"->"РАСХОДЫ ПО ПЕРЕДЕЛУ",@LOOPBACK,"Кол-во с учетом годного выхода","Рем. работы участка ремонта ДП-1","Уч ремонта ДП1","ОГМ",@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"), "бу статьи", "20_Выбытие","Цехи п-п (сч 20;23;26)", "бу видов затрат","бу прочих справочников","RUR");
+ENDIF
+)
+ENDFIX
+
+/*Копируем на ТЭРЦ	*/
+
+FIX(
+/*МВЗ ПОЛУЧАТЕЛЬ				*/"Ремонтные работы (пол-ль)"
+/*ВИД ЗАТРАТ					*/"Рем.работы ТЭРЦ"
+)
+"Кол-во"(
+IF(NOT @ISMBR(@LIST("БО Металлург.","ФОК","Спортивно-стрелковый стенд","№23. Цех питания")))
+@XWRITE("Кол-во"->"РАСХОДЫ ПО ПЕРЕДЕЛУ",@LOOPBACK,"Кол-во с учетом годного выхода","Рем. работы ТЭРЦ","Ремонтные работы",
+"ОГЭ",@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"), "бу статьи", "20_Выбытие","Цехи п-п (сч 20;23;26)", 
+"бу видов затрат","бу прочих справочников","RUR");
+ELSEIF(@ISMBR(@LIST("БО Металлург.","ФОК","Спортивно-стрелковый стенд","№23. Цех питания")))
+@XWRITE( "Кол-во"->"РАСХОДЫ ПО ПЕРЕДЕЛУ",@LOOPBACK,"Кол-во с учетом годного выхода","Рем. работы ТЭРЦ","Ремонтные работы","ОГЭ",@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"), "бу статьи", "20_Выбытие","Соц. объекты (сч 29)", "бу видов затрат","бу прочих справочников","RUR");
+ENDIF
+)
+ENDFIX
+
+
+/*Копируем на Электроцех*/
+
+FIX(
+/*МВЗ ПОЛУЧАТЕЛЬ				*/"Уч ремонтов электрооборудования цехов предприятия (пол-ль)"
+/*ВИД ЗАТРАТ					*/"Рем. работы Электроцеха"
+)
+"Кол-во"(
+IF(NOT @ISMBR(@LIST("БО Металлург.","ФОК","Спортивно-стрелковый стенд","№23. Цех питания")))
+@XWRITE( "Кол-во"->"РАСХОДЫ ПО ПЕРЕДЕЛУ",@LOOPBACK,"Кол-во с учетом годного выхода","Уч ремонтов электрооборудования цехов предприятия",
+"Услуги по ремонту электрооборудования цехов п-п","ОГЭ",@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"), "бу статьи", "20_Выбытие",
+"Цехи п-п (сч 20;23;26)", 
+"бу видов затрат","бу прочих справочников","RUR");
+ELSEIF(@ISMBR(@LIST("БО Металлург.","ФОК","Спортивно-стрелковый стенд","№23. Цех питания")))
+@XWRITE( "Кол-во"->"РАСХОДЫ ПО ПЕРЕДЕЛУ",@LOOPBACK,"Кол-во с учетом годного выхода","Уч ремонтов электрооборудования цехов предприятия",
+"Услуги по ремонту электрооборудования цехов п-п","ОГЭ",@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"), "бу статьи", "20_Выбытие",
+"Соц. объекты (сч 29)", "бу видов затрат","бу прочих справочников","RUR");
+ENDIF
+)
+ENDFIX
+
+
+ENDFIX 
+
+
+
+FIX(
+
+/*СЧЕТА БАЛАНСА							*/"20_Начисление","29_Поступление","26_Поступление"
+/*ВИД ЗАТРАТ							*/"Рем.работы ЦРМО","Рем. работы уч. ремонта метал-ого обор-я","Рем. работы уч. ремонтно-строительных работ","Рем. работы уч. ремонта ДП-1","Рем.работы ТЭРЦ","Рем. работы Электроцеха"
+/*КОНТРАГЕНТЫ							*/"бу контрагента"
+/*ЦФО									*/"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ						*/"бу элемента затрат"
+/*ВАЛЮТА								*/"RUR"
+/*СЦЕНАРИЙ								*/{СЦЕНАРИЙ}
+/*ГОД									*/{ГОД}
+/*ВЕРСИЯ								*/{ВЕРСИЯ}
+/*ПЕРИОД								*/@RELATIVE({ПЕРИОД},0)
+/*МВЗ									*/@RELATIVE({МВЗ},0)
+/*МВЗ ПОЛУЧАТЕЛЬ						*/"Выполнение работ (пол-ль)","Уч ремонтов метал.оборудования (пол-ль)","Уч ремонтно-строительных работ (пол-ль)","Уч ремонта ДП1 (пол-ль)","Ремонтные работы (пол-ль)","Уч ремонтов электрооборудования цехов предприятия (пол-ль)"
+/*ПРОДУКЦИЯ								*/"ПРОДУКЦИЯ ТЧМ и ТЧМС"
+/*ПРОЧЕЕ								*/@RELATIVE("Всего по группам ОС и НМА",0),"ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС"
+/*СТАТЬИ								*/@RELATIVE("РАСХОДЫ ПО ПЕРЕДЕЛУ",0)
+/*НАПРАВЛЕНИЕ			*/"бу направления"
+/*ПОКАЗАТЕЛИ							*/"Кол-во"
+
+)/*
+CLEARBLOCK ALL;*/
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

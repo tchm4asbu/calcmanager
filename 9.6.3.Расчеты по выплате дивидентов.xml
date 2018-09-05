@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="2" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="3" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+    <variable id="4" name="МВЗ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">МВЗ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите МВЗ</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по МВЗ"</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="9.6.3.Расчеты по выплате дивидентов" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">9.6.3.Расчеты по выплате дивидентов</property>
+      <variable_references>
+        <variable_reference id="2" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">9.6.3.Расчеты по выплате дивидентов</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">9.6.3.Расчеты по выплате дивидентов</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="4" name="МВЗ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">9.6.3.Расчеты по выплате дивидентов</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">9.6.3.Расчеты по выплате дивидентов</property>
+          <property name="seq">4</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"80_Увеличение"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+  var NextM=2;
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+FIX                            
+(/*ВИД ЗАТРАТ                        */"бу видов затрат"
+/*МВЗ                                */
+/*ПРОДУКЦИЯ                          */"бу вида продукции"
+/*МВЗ ПОЛУЧАТЕЛЬ                     */"бу МВЗ (пол-ль)"
+/*ПОКАЗАТЕЛИ                         */"Сумма"
+/*СТАТЬИ                             */
+/*ЦФО                                */"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                    */"бу элемента затрат"
+/*ВЕРСИЯ                             */{ВЕРСИЯ}
+/*ГОД                                */{ГОД}
+/*НАПРАВЛЕНИЕ      */"бу направления"
+/*ПРОЧЕЕ                             */"бу прочих справочников"
+/*ПЕРИОД                             */@RELATIVE("Всего год",0)
+/*СЦЕНАРИЙ                           */{СЦЕНАРИЙ}
+/*КОНТРАГЕНТЫ                        */"Прочие внешние"
+/*ВАЛЮТА                             */"RUR"
+/*СЧЕТА БАЛАНСА                      */
+)
+
+FIX(
+/*МВЗ                                 */(@LIST("ТЧМ в целом","ТЧМС в целом") and @RELATIVE({МВЗ},0))
+)
+
+FIX(
+/*СТАТЬИ                             */"Дивиденды"
+)
+
+
+
+
+"75_Начисление"(
+IF("бу видов затрат"->"бу контрагента"->"бу направления"->"бу прочих справочников"->"ПЭО"->"бу элемента затрат"->"Дивиденды"->"80_Уменьшение"
+<>#missing)
+
+"75_Начисление"=@CREATEBLOCK("бу видов затрат"->"бу контрагента"->"бу направления"->"бу прочих справочников"->"ПЭО"->"бу элемента затрат"->"Дивиденды"->"80_Уменьшение");
+
+"75_Начисление"="бу видов затрат"->"бу контрагента"->"бу направления"->"бу прочих справочников"->"ПЭО"->"бу элемента затрат"->"Дивиденды"->"80_Уменьшение";
+else
+"75_Начисление"=#missing;
+endif
+)
+
+LOOP(12);
+
+"75_ДЗ (+), КЗ (-) на конец"(
+IF ("75_ДЗ (+), КЗ (-) на начало"+"75_Начисление"-"75_Выплаты"
+<>#missing)
+
+"75_ДЗ (+), КЗ (-) на конец"=@CREATEBLOCK("75_ДЗ (+), КЗ (-) на начало");
+"75_ДЗ (+), КЗ (-) на конец"=@CREATEBLOCK("75_Начисление");
+"75_ДЗ (+), КЗ (-) на конец"=@CREATEBLOCK("75_Выплаты");
+"75_ДЗ (+), КЗ (-) на конец"="75_ДЗ (+), КЗ (-) на начало"+"75_Начисление"-"75_Выплаты";
+else
+"75_ДЗ (+), КЗ (-) на конец"=#missing;
+endif
+)
+
+
+"75_ДЗ (+), КЗ (-) на начало"(
+IF(@ISMBR(@relative("Всего год",0)) and NOT @ISMBR("Январь"))
+if(@PRIOR("75_ДЗ (+), КЗ (-) на конец")<>#missing)
+"75_ДЗ (+), КЗ (-) на начало"=@CREATEBLOCK("75_ДЗ (+), КЗ (-) на конец");
+"75_ДЗ (+), КЗ (-) на начало"=@PRIOR("75_ДЗ (+), КЗ (-) на конец");
+else
+"75_ДЗ (+), КЗ (-) на начало"=#missing;
+endif
+endif
+)
+
+
+ENDLOOP;
+
+
+ENDFIX
+ENDFIX
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

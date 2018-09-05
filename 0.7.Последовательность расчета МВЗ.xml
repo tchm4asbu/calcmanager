@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="2" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="0.7.Последовательность расчета МВЗ" product="Planning">
+      <property name="description">Последовательность расчета себестоимости</property>
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan2</property>
+      <property name="display_label">0.7.Последовательность расчета МВЗ</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <variable_references>
+        <variable_reference id="1" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.7.Последовательность расчета МВЗ</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="2" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.7.Последовательность расчета МВЗ</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ				*/  "бу видов затрат (пол-ль)"
+/*ПРОДУКТ ПОЛУЧАТЕЛЬ				*/  "бу вида продукции (пол-ль)"
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* СЧЕТА БАЛАНСА					*/	"20_Начисление"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+FIX(
+/*ПОКАЗАТЕЛИ                                        */
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/"бу видов затрат (пол-ль)"
+/*ПРОДУКТ ПОЛУЧАТЕЛЬ								*/"бу вида продукции (пол-ль)"
+/*НАПРАВЛЕНИЕ                     */"бу направления"
+/*КОНТРАГЕНТЫ                                       */"бу контрагента"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */@RELATIVE("Всего по МВЗ (пол-ль)",0)
+/*ЦФО                                               */"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                                   */"бу элемента затрат"
+/*ПРОДУКЦИЯ                                         */"бу вида продукции"
+/*МВЗ                                               */@RELATIVE("Всего по МВЗ",0)
+/*ГОД                                               */"FY18"
+/*ВЕРСИЯ                                            */"Рабочая 1"
+/*СЦЕНАРИЙ                                          */"Проект"
+/*ПЕРИОД                                            */
+/*СЧЕТА БАЛАНСА                                     */"бу счета баланса"
+/*ВАЛЮТА                                            */"бу валюты"
+/*СТАТЬИ                                            */"бу Статьи"
+/*ВИД ЗАТРАТ                                        */"бу видов затрат"
+/*ПРОЧЕЕ                                            */"бу прочих справочников"                           
+)
+
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"Шаг0"
+)
+"P0"=#missing;
+"P0"(
+IF(@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Сумма"
+- ( "Сумма" > 0 ) * (@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма">0) /*убираем цикл */
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма" +0== 0)
+"P0"= 1;
+ENDIF)
+
+ENDFIX
+
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"Шаг1"
+)
+
+"P0"=#missing;
+"P0"(
+IF("Шаг0"+0==0)
+IF(@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Сумма"
+- ( "Сумма" > 0 ) * (@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма">0) /*убираем цикл */
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма" 
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг0" +0== 0)
+"P0"=1;
+ENDIF
+ENDIF
+)
+
+ENDFIX
+
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"Шаг2"
+)
+
+"P0"=#missing;
+"P0"(
+IF("Шаг0"+"Шаг1"+0==0)
+IF(@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Сумма"
+- ( "Сумма" > 0 ) * (@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма">0) /*убираем цикл */
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма" 
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг0"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг1"+0== 0)
+"P0"=1;
+ENDIF
+ENDIF
+)
+
+ENDFIX
+
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"Шаг3"
+)
+
+"P0"=#missing;
+"P0"(
+IF("Шаг0"+"Шаг1"+"Шаг2"+0==0)
+IF(@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Сумма"
+- ( "Сумма" > 0 ) * (@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма">0) /*убираем цикл */
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма" 
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг0"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг1"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг2"+0== 0)
+"P0"=1;
+ENDIF
+ENDIF
+)
+
+ENDFIX
+
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"Шаг4"
+)
+
+"P0"=#missing;
+"P0"(
+IF("Шаг0"+"Шаг1"+"Шаг2"+"Шаг3"+0==0)
+IF(@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Сумма"
+- ( "Сумма" > 0 ) * (@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма">0) /*убираем цикл */
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма" 
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг0"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг1"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг2"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг3"+0== 0)
+"P0"=1;
+ENDIF
+ENDIF
+)
+
+ENDFIX
+
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"Шаг5"
+)
+
+"P0"=#missing;
+"P0"(
+IF("Шаг0"+"Шаг1"+"Шаг2"+"Шаг3"+"Шаг4"+0==0)
+IF(@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Сумма"
+- ( "Сумма" > 0 ) * (@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма">0) /*убираем цикл */
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма" 
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг0"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг1"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг2"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг3"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг4"+0== 0)
+"P0"=1;
+ENDIF
+ENDIF
+)
+
+ENDFIX
+
+
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"Шаг6"
+)
+
+"P0"=#missing;
+"P0"(
+IF("Шаг0"+"Шаг1"+"Шаг2"+"Шаг3"+"Шаг4"+"Шаг5"+0==0)
+IF(@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Сумма"
+- ( "Сумма" > 0 ) * (@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма">0) /*убираем цикл */
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма" 
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг0"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг1"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг2"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг3"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг4"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг5"+0== 0)
+"P0"=1;
+ENDIF
+ENDIF
+)
+
+ENDFIX
+
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"Шаг7"
+)
+
+"P0"=#missing;
+"P0"(
+IF("Шаг0"+"Шаг1"+"Шаг2"+"Шаг3"+"Шаг4"+"Шаг5"+"Шаг6"+0==0)
+IF(@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Сумма"
+- ( "Сумма" > 0 ) * (@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма">0) /*убираем цикл */
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма" 
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг0"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг1"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг2"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг3"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг4"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг5"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг6"+0== 0)
+"P0"=1;
+ENDIF
+ENDIF
+)
+
+ENDFIX
+
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"Шаг8"
+)
+
+"P0"=#missing;
+"P0"(
+IF("Шаг0"+"Шаг1"+"Шаг2"+"Шаг3"+"Шаг4"+"Шаг5"+"Шаг6"+"Шаг7"+0==0)
+IF(@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Сумма"
+- ( "Сумма" > 0 ) * (@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма">0) /*убираем цикл */
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма" 
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг0"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг1"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг2"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг3"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг4"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг5"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг6"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг7"+0== 0)
+"P0"=1;
+ENDIF
+ENDIF
+)
+
+ENDFIX
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"Шаг9"
+)
+
+"P0"=#missing;
+"P0"(
+IF("Шаг0"+"Шаг1"+"Шаг2"+"Шаг3"+"Шаг4"+"Шаг5"+"Шаг6"+"Шаг7"+"Шаг8"+0==0)
+IF(@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Сумма"
+- ( "Сумма" > 0 ) * (@MEMBER(@SUBSTRING(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")),0,@CalcMgrTextLength(@NAME(@CURRMBR("МВЗ ПОЛУЧАТЕЛЬ")))-9))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма">0) /*убираем цикл */
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Сумма" 
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг0"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг1"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг2"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг3"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг4"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг5"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг6"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг7"
+- @MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->@MEMBER(@ANCEST("МВЗ",4))->"Шаг8"+0== 0)
+"P0"=1;
+ENDIF
+ENDIF
+)
+
+ENDFIX
+
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ДРАЙВЕР" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">СЧЕТА БАЛАНСА</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите драйвер распределения</property>
+      <property name="scope">ruleset</property>
+      <property name="useLastValue">true</property>
+      <value>&amp;СЧЕТ_БАЛАНСА_КОНТ</value>
+      <limits type="expression">
+        <property name="value">@Relative("Драйвера распределения", 0)</property>
+      </limits>
+    </variable>
+    <variable id="2" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="3" name="ВИД_ЗАТРАТ_ПОЛУЧАТЕЛЬ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите ВЗ ПОЛУЧАТЕЛЬ</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по видам затрат (пол-ль)"</value>
+    </variable>
+    <variable id="4" name="СТАТЬИ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">СТАТЬИ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите статью</property>
+      <property name="scope">ruleset</property>
+      <property name="useLastValue">true</property>
+      <value>"бу статьи"</value>
+    </variable>
+    <variable id="5" name="МВЗ_ПОЛУЧАТЕЛЬ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">МВЗ ПОЛУЧАТЕЛЬ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите МВЗ - ПОЛУЧАТЕЛЯ</property>
+      <property name="scope">ruleset</property>
+      <value>"бу МВЗ (пол-ль)"</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="0.0.х. Мэппинг Драйвера для ВЗ и СТАТЬИ вспом" product="Planning">
+      <property name="description">Добавление Драйвера для ВЗ и Статьи из формы 0.9.2.1.База распределения ТЧМ Продукт ВЗ</property>
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan2</property>
+      <property name="display_label">0.0.х. Мэппинг Драйвера для ВЗ и СТАТЬИ вспом</property>
+      <property name="enableNotifications">false</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <variable_references>
+        <variable_reference id="2" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">true</property>
+          <property name="rule_name">0.0.х. Мэппинг Драйвера для ВЗ и СТАТЬИ вспом</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="ВИД_ЗАТРАТ_ПОЛУЧАТЕЛЬ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">true</property>
+          <property name="rule_name">0.0.х. Мэппинг Драйвера для ВЗ и СТАТЬИ вспом</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="5" name="МВЗ_ПОЛУЧАТЕЛЬ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">true</property>
+          <property name="rule_name">0.0.х. Мэппинг Драйвера для ВЗ и СТАТЬИ вспом</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="ДРАЙВЕР">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.х. Мэппинг Драйвера для ВЗ и СТАТЬИ вспом</property>
+          <property name="seq">4</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="4" name="СТАТЬИ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.х. Мэппинг Драйвера для ВЗ и СТАТЬИ вспом</property>
+          <property name="seq">5</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+FIX ( 
+/* ВАЛЮТА							*/"бу валюты"
+/* ВЕРСИЯ                         	*/"Рабочая 1"
+/* СЦЕНАРИЙ                     	*/"Проект"
+/* ПЕРИОД                         	*/"P0"
+/* ПОКАЗАТЕЛИ                       */"Кол-во"
+/* СЧЕТА БАЛАНСА                   	*/{ДРАЙВЕР}
+/* ЦФО                            	*/"ПЭО" 
+/* КОНТРАГЕНТЫ                      */"бу контрагента"
+/* ГОД                            	*/{ГОД} 
+/* НАПРАВЛЕНИЕ    */"бу направления"
+/* ПРОДУКЦИЯ                      	*/"бу вида продукции"
+/* ПРОДУКЦИЯ ПОЛУЧАТЕЛЬ            	*/"бу вида продукции (пол-ль)"
+/* ПРОЧЕЕ                         	*/"бу прочих справочников"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ                 	*/"бу элемента затрат"
+/* МВЗ ПОЛУЧАТЕЛЬ                   */"бу МВЗ (пол-ль)"
+/* ВИД ЗАТРАТ                      	*/"бу видов затрат"
+/* ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ		   	*/"бу видов затрат (пол-ль)"
+/* МВЗ                            	*/
+/* СТАТЬИ                         	*/{СТАТЬИ}
+)
+/*Добавляем ВЗ в мэппинг для МВЗ*/
+
+"бу МВЗ"(@XWRITE(1,@LOOPBACK,@SUBSTRING(@NAME({ВИД_ЗАТРАТ_ПОЛУЧАТЕЛЬ}),0,@CalcMgrTextLength(@NAME({ВИД_ЗАТРАТ_ПОЛУЧАТЕЛЬ}))-9),@SUBSTRING(@NAME({МВЗ_ПОЛУЧАТЕЛЬ}),0,@CalcMgrTextLength(@NAME({МВЗ_ПОЛУЧАТЕЛЬ}))-9))
+		;)
+ENDFIX
+FIX ( 
+/* ВАЛЮТА							*/"бу валюты"
+/* ВЕРСИЯ                         	*/"Рабочая 1"
+/* СЦЕНАРИЙ                     	*/"Проект"
+/* ПЕРИОД                         	*/"P0"
+/* ПОКАЗАТЕЛИ                       */"Кол-во"
+/* СЧЕТА БАЛАНСА                   	*/{ДРАЙВЕР}
+/* ЦФО                            	*/"ПЭО" 
+/* КОНТРАГЕНТЫ                      */"бу контрагента"
+/* ГОД                            	*/{ГОД}
+/* НАПРАВЛЕНИЕ    */"бу направления"
+/* ПРОДУКЦИЯ                      	*/"бу вида продукции"
+/* ПРОДУКЦИЯ ПОЛУЧАТЕЛЬ            	*/"бу вида продукции (пол-ль)"
+/* ПРОЧЕЕ                         	*/"бу прочих справочников"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ                 	*/"бу элемента затрат"
+/* МВЗ ПОЛУЧАТЕЛЬ                   */"бу МВЗ (пол-ль)"
+/* ВИД ЗАТРАТ                      	*/
+/* ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ		   	*/"бу видов затрат (пол-ль)"
+/* МВЗ                            	*/@Relative("Всего по МВЗ", 0)
+/* СТАТЬИ                         	*/{СТАТЬИ}
+)
+/*Агрегируем МВЗ*/
+AGG("ВИД ЗАТРАТ");
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

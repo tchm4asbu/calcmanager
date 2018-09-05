@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="2" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="3" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="2.5.04.Расчет кол-ва вагонов для уч провески" product="Planning">
+      <property name="description">Расчет кол-ва вагонов для уч провески</property>
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">2.5.04.Расчет кол-ва вагонов для уч провески</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <variable_references>
+        <variable_reference id="2" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.5.04.Расчет кол-ва вагонов для уч провески</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.5.04.Расчет кол-ва вагонов для уч провески</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.5.04.Расчет кол-ва вагонов для уч провески</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"80_Увеличение"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+  var NextM=2;
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+FIX(
+/*СТАТЬИ */"бу статьи"
+/*ЦФО */"ПЭО"
+/*ВАЛЮТА */"RUR"
+/*МВЗ *//*"Грузоперевозки_"*/
+/*НАПРАВЛЕНИЕ */"бу направления"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ */"бу элемента затрат"
+/*СЧЕТА БАЛАНСА */"20_Выбытие"
+/*ГОД */{ГОД}
+/*ВЕРСИЯ */{ВЕРСИЯ}
+/*ПЕРИОД */@RELATIVE("Всего год",0)
+/*СЦЕНАРИЙ */{СЦЕНАРИЙ}
+/*ПРОДУКЦИЯ */
+/*ВИД ЗАТРАТ */
+/*ПРОЧЕЕ */
+/*ПОКАЗАТЕЛИ */
+/*МВЗ ПОЛУЧАТЕЛЬ */
+)
+
+SET CREATEBLOCKONEQ ON;
+
+/*Перекладка показателей из 2.5.1. - "Поступление грузов ТЧМ","Внутризаводские перевозки"*/
+   FIX(
+   /*МВЗ                         */
+   /*МВЗ ПОЛУЧАТЕЛЬ                     */@RELATIVE("ТЧМ итого (пол-ль)",0)
+   /*КОНТРАГЕНТЫ                   */"бу контрагента"
+   /*ПРОДУКЦИЯ                        */"бу вида продукции"           
+   /*ПОКАЗАТЕЛИ                        */ "Кол-во"
+   /*ВИД ЗАТРАТ                  */"бу видов затрат"
+   /*ПРОЧЕЕ                     */"Поступление грузов ТЧМ","Внутризаводские перевозки" 
+   )
+
+   "ОПР ЖДЦ"="Грузоперевозки_"->"Итого по видам затрат"+ "Грузоперевозки_"->"Чугун в целом"->"бу видов затрат";
+
+   ENDFIX
+   
+/*Перекладка показателей из 2.5.1. - "Отгрузка ТЧМ"*/
+   FIX(
+   /*МВЗ                         */
+   /*МВЗ ПОЛУЧАТЕЛЬ                     */@RELATIVE("ТЧМ итого (пол-ль)",0)
+   /*КОНТРАГЕНТЫ                   */"бу контрагента"
+   /*ПРОДУКЦИЯ                        */  @RELATIVE("Всего по продукции",0)    
+   /*ПОКАЗАТЕЛИ                        */ "Кол-во","Кол-во вагонов"
+   /*ВИД ЗАТРАТ                  */"бу видов затрат"
+   /*ПРОЧЕЕ                     */"Отгрузка ТЧМ"
+   )
+SET CREATENONMISSINGBLK ON; 
+   "ОПР ЖДЦ"(
+		IF(@ISMBR("Кол-во"))
+         "ОПР ЖДЦ"="Грузоперевозки_";
+         ELSE
+         IF("Грузоперевозки_"->"Кол-во"+0<>0)
+          "ОПР ЖДЦ"="Грузоперевозки_"->"ТЧМ в целом (пол-ль)";
+          ELSE
+          	#missing;
+          ENDIF
+		ENDIF
+   )
+    SET CREATENONMISSINGBLK OFF;
+    
+    
+    
+    
+    
+
+   ENDFIX   
+SET CREATEBLOCKONEQ OFF;
+
+   /*Рачет кол-ва вагонов - "Поступление грузов ТЧМ","Внутризаводские перевозки"*/
+   FIX(
+   /*МВЗ                               */"ОПР ЖДЦ"
+   /*МВЗ ПОЛУЧАТЕЛЬ                     */@RELATIVE("ТЧМ итого (пол-ль)",0)
+   /*КОНТРАГЕНТЫ                   */"бу контрагента"
+   /*ПРОДУКЦИЯ                        */"бу вида продукции"             
+   /*ПОКАЗАТЕЛИ                           */ 
+   /*ВИД ЗАТРАТ                     */"бу видов затрат" 
+   /*ПРОЧЕЕ                        */"Поступление грузов ТЧМ","Внутризаводские перевозки"
+   )
+
+   datacopy "Кол-во" to "Кол-во вагонов";
+   datacopy "Вместимость вагонов,т" to "Кол-во вагонов";
+   
+   "Кол-во вагонов"(
+  
+   if(@REMAINDER("Кол-во"/"Вместимость вагонов,т")==0)
+  "Кол-во вагонов"=("Кол-во"/"Вместимость вагонов,т");
+  
+  elseif(@REMAINDER("Кол-во"/"Вместимость вагонов,т")<0.5 and @REMAINDER("Кол-во"/"Вместимость вагонов,т")>0)
+   "Кол-во вагонов"=@TRUNCATE("Кол-во"/"Вместимость вагонов,т")+1;
+   
+     
+   else
+   "Кол-во вагонов"=@round("Кол-во"/"Вместимость вагонов,т");
+  endif
+  )
+   
+
+   ENDFIX
+
+   
+   /*Рачет Кол-ва вагонов на провеску*/
+   FIX(
+   /*МВЗ                               */"ОПР ЖДЦ"
+   /*МВЗ ПОЛУЧАТЕЛЬ                     */@RELATIVE("ТЧМ итого (пол-ль)",0)
+   /*КОНТРАГЕНТЫ                   */@RELATIVE("Итого по контрагентам",0)
+   /*ПРОДУКЦИЯ                           */@RELATIVE("Итого по продукции",0)            
+   /*ПОКАЗАТЕЛИ                         */ 
+   /*ВИД ЗАТРАТ                     */"бу видов затрат" 
+   /*ПРОЧЕЕ                        */@RELATIVE("Всего по видам перевозок",0)
+   )
+ 
+
+   
+   
+   
+
+      datacopy "Кол-во вагонов" to "Кол-во вагонов на провеску";
+   
+    
+    
+      "Кол-во вагонов на провеску"(
+      if (@ismbr("Внутризаводские перевозки") ) 
+  if(@REMAINDER("Кол-во вагонов"*"Доля провески")==0)
+   "Кол-во вагонов на провеску"=("Кол-во вагонов"*"Доля провески"); 
+    elseif (@REMAINDER("Кол-во вагонов"*"Доля провески")<0.5 and @REMAINDER("Кол-во вагонов"*"Доля провески")>0)
+   "Кол-во вагонов на провеску"=@TRUNCATE("Кол-во вагонов"*"Доля провески")+1;
+   else
+   "Кол-во вагонов на провеску"=@round("Кол-во вагонов"*"Доля провески");
+      
+  endif
+
+        
+      else
+         "Кол-во вагонов на провеску"="Кол-во вагонов";
+      endif
+      )
+
+   ENDFIX
+   
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

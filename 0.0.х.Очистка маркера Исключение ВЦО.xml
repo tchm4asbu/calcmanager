@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="2" name="МВЗ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">МВЗ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите МВЗ</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по МВЗ"</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="0.0.х.Очистка маркера Исключение ВЦО" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">0.0.х.Очистка маркера Исключение ВЦО</property>
+      <property name="enableNotifications">false</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <variable_references>
+        <variable_reference id="1" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">true</property>
+          <property name="rule_name">0.0.х.Очистка маркера Исключение ВЦО</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="2" name="МВЗ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.х.Очистка маркера Исключение ВЦО</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+          <property name="value">"Итого по МВЗ"</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Очистка маркера Исключение ВЦО по ВЗ и МВЗ перед переносом из Plan2  */
+FIX(
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					 */
+/*ЦФО 						  		 */"ПЭО"
+/*КОНТРАГЕНТЫ 						 */"бу контрагента"
+/*НАПРАВЛЕНИЕ 	 				     */"бу направления"
+/*ПРОЧЕЕ 							 */"бу прочих справочников"
+/*СЧЕТА БАЛАНСА                      */"20_Исключение ВЦО"
+/*МВЗ ПОЛУЧАТЕЛЬ 					 */"бу МВЗ (пол-ль)"
+/*ВАЛЮТА 							 */"бу валюты"
+/*ВИД ЗАТРАТ 						 */@RELATIVE("Итого по видам затрат",0)
+/*СТАТЬИ							 */"бу статьи"
+/*СЦЕНАРИЙ							 */"Проект"
+/*ПЕРИОД							 */"P0"
+/*ВЕРСИЯ 							 */"Рабочая_1"
+/*ГОД 								 */{ГОД}
+/*ПРОДУКЦИЯ 						 */"бу вида продукции"
+/*ПОКАЗАТЕЛИ 						 */
+/*МВЗ 								 */@RELATIVE({МВЗ},0)
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					 */"бу элемента затрат"
+)
+
+  CLEARDATA "Сумма";     
+
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

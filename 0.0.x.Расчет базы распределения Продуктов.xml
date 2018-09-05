@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="СПИСОК_ПЕРИОД" product="Planning" type="members" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">ПЕРИОД</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите 1 или несколько месяцев</property>
+      <property name="scope">ruleset</property>
+      <property name="useLastValue">true</property>
+      <value>"Всего год"</value>
+    </variable>
+    <variable id="2" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="3" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="4" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+    <variable id="5" name="МВЗ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">МВЗ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите МВЗ</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по МВЗ"</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="0.0.x.Расчет базы распределения Продуктов" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan2</property>
+      <property name="display_label">0.0.x.Расчет базы распределения Продуктов</property>
+      <property name="enableNotifications">false</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <variable_references>
+        <variable_reference id="3" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.x.Расчет базы распределения Продуктов</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="4" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.x.Расчет базы распределения Продуктов</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="2" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.x.Расчет базы распределения Продуктов</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="5" name="МВЗ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.x.Расчет базы распределения Продуктов</property>
+          <property name="seq">4</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="СПИСОК_ПЕРИОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">0.0.x.Расчет базы распределения Продуктов</property>
+          <property name="seq">5</property>
+          <property name="type">4</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ				*/  "бу видов затрат (пол-ль)"
+/*ПРОДУКТ ПОЛУЧАТЕЛЬ				*/  "бу вида продукции (пол-ль)"
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* СЧЕТА БАЛАНСА					*/	"20_Начисление"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+/*SET LOCKBLOCK HIGH;*/
+FIX(
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/
+/*ПРОДУКТ ПОЛУЧАТЕЛЬ								*/"бу вида продукции (пол-ль)"
+/*ПОКАЗАТЕЛИ                                        */"База"
+/*НАПРАВЛЕНИЕ                     					*/"бу направления"
+/*КОНТРАГЕНТЫ                                       */"бу контрагента"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */@RELATIVE(@MEMBER(@CONCATENATE(@NAME({МВЗ})," (пол-ль)")),0)
+/*ЦФО                                               */"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                                   */"бу элемента затрат"
+/*ПРОДУКЦИЯ                                         */@RELATIVE("Всего по продукции",0)
+/*МВЗ                                               */@RELATIVE({МВЗ},0)
+/*ГОД                                               */{ГОД}
+/*ВЕРСИЯ                                            */{ВЕРСИЯ}
+/*СЦЕНАРИЙ                                          */{СЦЕНАРИЙ}
+/*ПЕРИОД                                            */@ILDESCENDANTS({СПИСОК_ПЕРИОД}) and @RELATIVE("Всего год",0)
+/*СЧЕТА БАЛАНСА                                     */@RELATIVE("Драйвера распределения",0)
+/*ВАЛЮТА                                            */"бу валюты"
+/*СТАТЬИ                                            *//*"бу статьи",*/@Relative("ПОЛНАЯ СЕБЕСТОИМОСТЬ", 0)   
+/*ВИД ЗАТРАТ                                        */@Relative("Всего по видам затрат",0),"бу видов затрат","ТехЭлемент"
+/*ПРОЧЕЕ                                            */"бу прочих справочников"                           
+)
+FIXPARALLEL(8,@DESCENDANTS("Всего по видам затрат (пол-ль)"))
+CLEARBLOCK ALL;
+ENDFIXPARALLEL
+ENDFIX
+FIX(
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/@RELATIVE("Всего по видам затрат (пол-ль)",0)
+/*ПРОДУКТ ПОЛУЧАТЕЛЬ								*/"бу вида продукции (пол-ль)"
+/*ПОКАЗАТЕЛИ                                        */
+/*НАПРАВЛЕНИЕ                     					*/"бу направления"
+/*КОНТРАГЕНТЫ                                       */"бу контрагента"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */
+/*ЦФО                                               */"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                                   */"бу элемента затрат"
+/*ПРОДУКЦИЯ                                         */@REMOVE(@RELATIVE("Всего по продукции",0),@LIST(@RELATIVE("Основная продукция",0)))
+/*МВЗ                                               */
+/*ГОД                                               */{ГОД}
+/*ВЕРСИЯ                                            */{ВЕРСИЯ}
+/*СЦЕНАРИЙ                                          */{СЦЕНАРИЙ}
+/*ПЕРИОД                                            */@ILDESCENDANTS({СПИСОК_ПЕРИОД}) and @RELATIVE("Всего год",0)
+/*СЧЕТА БАЛАНСА                                     */"Драйвер: Продукция участка"
+/*ВАЛЮТА                                            */"бу валюты"
+/*СТАТЬИ                                            */"бу статьи"   
+/*ВИД ЗАТРАТ                                        */ "бу видов затрат"
+/*ПРОЧЕЕ                                            */"бу прочих справочников"                           
+)
+
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"База"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */
+/*МВЗ                                               */@RELATIVE({МВЗ},0)
+)
+AGG("МВЗ ПОЛУЧАТЕЛЬ");
+ENDFIX
+
+
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"База"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */
+/*МВЗ                                               */
+)
+
+FIXPARALLEL(8,@DESCENDANTS({МВЗ}))
+
+"МВЗ получатели"(
+IF("МВЗ получатели" < 1 and "МВЗ получатели">0)
+
+IF(@ISDESC("ТЧМ Итого"))
+"База"->"ТЧМ в целом (пол-ль)" = 1- "МВЗ получатели";
+ELSE
+"База"->"ТЧМС в целом (пол-ль)" = 1- "МВЗ получатели";
+
+ENDIF
+ENDIF)
+
+ENDFIXPARALLEL
+
+ENDFIX
+
+
+FIX(
+/*ПОКАЗАТЕЛИ                                        */"База"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */@IANCESTORS("МВЗ получатели")
+/*МВЗ                                               */@RELATIVE({МВЗ},0)
+)
+CLEARBLOCK ALL;
+
+ENDFIX
+
+
+ENDFIX
+FIX(
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/@RELATIVE("Всего по видам затрат (пол-ль)",0)
+/*ПРОДУКТ ПОЛУЧАТЕЛЬ								*/"бу вида продукции (пол-ль)"
+/*ПОКАЗАТЕЛИ                                        */"База"
+/*НАПРАВЛЕНИЕ                     					*/"бу направления"
+/*КОНТРАГЕНТЫ                                       */"бу контрагента"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */@RELATIVE(@MEMBER(@CONCATENATE(@NAME({МВЗ})," (пол-ль)")),0)
+/*ЦФО                                               */"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                                   */"бу элемента затрат"
+/*ПРОДУКЦИЯ                                         */@REMOVE(@RELATIVE("Всего по продукции",0),@LIST(@RELATIVE("Основная продукция",0)))
+/*МВЗ                                               */
+/*ГОД                                               */{ГОД}
+/*ВЕРСИЯ                                            */{ВЕРСИЯ}
+/*СЦЕНАРИЙ                                          */{СЦЕНАРИЙ}
+/*ПЕРИОД                                            */@ILDESCENDANTS({СПИСОК_ПЕРИОД}) and @RELATIVE("Всего год",0)
+/*СЧЕТА БАЛАНСА                                     */"Драйвер: Продукция участка"
+/*ВАЛЮТА                                            */"бу валюты"
+/*СТАТЬИ                                            */   
+/*ВИД ЗАТРАТ                                        */ "бу видов затрат"
+/*ПРОЧЕЕ                                            */"бу прочих справочников"                           
+)
+FIXPARALLEL(8,@DESCENDANTS({МВЗ}))
+
+DATACOPY "бу статьи" to "Сырье и основные материалы.";
+
+ENDFIXPARALLEL
+
+ENDFIX
+FIX(
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/@RELATIVE("Всего по видам затрат (пол-ль)",0)
+/*ПРОДУКТ ПОЛУЧАТЕЛЬ								*/"бу вида продукции (пол-ль)"
+/*ПОКАЗАТЕЛИ                                        */"База"
+/*НАПРАВЛЕНИЕ                     					*/"бу направления"
+/*КОНТРАГЕНТЫ                                       */"бу контрагента"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */@RELATIVE(@MEMBER(@CONCATENATE(@NAME({МВЗ})," (пол-ль)")),0)
+/*ЦФО                                               */"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                                   */"бу элемента затрат"
+/*ПРОДУКЦИЯ                                         */@REMOVE(@RELATIVE("Всего по продукции",0),@LIST(@RELATIVE("Основная продукция",0)))
+/*МВЗ                                               */
+/*ГОД                                               */{ГОД}
+/*ВЕРСИЯ                                            */{ВЕРСИЯ}
+/*СЦЕНАРИЙ                                          */{СЦЕНАРИЙ}
+/*ПЕРИОД                                            */@ILDESCENDANTS({СПИСОК_ПЕРИОД}) and @RELATIVE("Всего год",0)
+/*СЧЕТА БАЛАНСА                                     */"Драйвер: Продукция участка"
+/*ВАЛЮТА                                            */"бу валюты"
+/*СТАТЬИ                                            */  "Сырье и основные материалы."    
+/*ВИД ЗАТРАТ                                        */ 
+/*ПРОЧЕЕ                                            */"бу прочих справочников"                           
+)
+SET COPYMISSINGBLOCK ON;
+FIXPARALLEL(8,@DESCENDANTS({МВЗ}))
+/*%Template(name:="TPL_Тиражирование Базы на ВЗ источники",application:="ТЧМ",plantype:="Plan2",dtps:=())
+*/
+
+DATACOPY "бу видов затрат" to "ТехЭлемент";
+ENDFIXPARALLEL
+
+SET COPYMISSINGBLOCK OFF;
+
+ENDFIX
+FIX(
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/
+/*ПРОДУКТ ПОЛУЧАТЕЛЬ								*/"бу вида продукции (пол-ль)"
+/*ПОКАЗАТЕЛИ                                        */
+/*НАПРАВЛЕНИЕ                     					*/"бу направления"
+/*КОНТРАГЕНТЫ                                       */"бу контрагента"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */
+/*ЦФО                                               */"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                                   */"бу элемента затрат"
+/*ПРОДУКЦИЯ                                         */
+/*МВЗ                                               */
+/*ГОД                                               */{ГОД}
+/*ВЕРСИЯ                                            */{ВЕРСИЯ}
+/*СЦЕНАРИЙ                                          */{СЦЕНАРИЙ}
+/*ПЕРИОД                                            */@ILDESCENDANTS({СПИСОК_ПЕРИОД}) and @RELATIVE("Всего год",0)
+/*СЧЕТА БАЛАНСА                                     */"Драйвер: Продукция участка"
+/*ВАЛЮТА                                            */"бу валюты"
+/*СТАТЬИ                                            */"Сырье и основные материалы.","бу статьи"    
+/*ВИД ЗАТРАТ                                        */"ТехЭлемент","бу видов затрат"
+/*ПРОЧЕЕ                                            */"бу прочих справочников"                           
+)
+/*Для СТЧ,УДЧ,Уч разливочных машин создаем искуственно перекладку на ОПР ДП*/
+SET CREATENONMISSINGBLK ON;
+FIX(
+/*МВЗ                                               */@RELATIVE({МВЗ},0) and "СТЧ"
+)
+FIX(
+/*ПРОДУКЦИЯ                                         */"Склад товарного чугуна"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */"ОПР ДП (пол-ль)"
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/"Содержание склада холодного чугуна (пол-ль)"
+)
+"База"(
+	IF(@ISMBR("Сырье и основные материалы."->"ТехЭлемент") or @ISMBR("бу статьи"->"бу видов затрат"))
+	1;
+	ENDIF
+	)
+ENDFIX
+ENDFIX
+
+
+FIX(
+/*МВЗ                                               */@RELATIVE({МВЗ},0) and "УДЧ"
+)
+FIX(
+/*ПРОДУКЦИЯ                                         */"Расходы по десульфурации чугуна"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */"ОПР ДП (пол-ль)"
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/"Расходы по десульфурации (пол-ль)"
+)
+"База"(
+	IF(@ISMBR("Сырье и основные материалы."->"ТехЭлемент") or @ISMBR("бу статьи"->"бу видов затрат"))
+	1;
+	ENDIF
+	)
+ENDFIX
+ENDFIX
+
+FIX(
+/*МВЗ                                               */@RELATIVE({МВЗ},0) and "Уч разливочных машин"
+)
+FIX(
+/*ПРОДУКЦИЯ                                         */"Расходы по разливке чугуна"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */"ОПР ДП (пол-ль)"
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/"Расходы по разливке (пол-ль)"
+)
+"База"(
+	IF(@ISMBR("Сырье и основные материалы."->"ТехЭлемент") or @ISMBR("бу статьи"->"бу видов затрат"))
+	1;
+	ENDIF
+	)
+ENDFIX
+ENDFIX
+
+FIX(
+/*МВЗ                                               */@RELATIVE({МВЗ},0) and "Литейный уч"
+)
+FIX(
+/*ПРОДУКЦИЯ                                         */"Силикатный клей"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */"Литейный уч (пол-ль)"
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/"Жидкое стекло (пол-ль)"
+)
+"База"(
+	IF(@ISMBR("Сырье и основные материалы."->"ТехЭлемент") or @ISMBR("бу статьи"->"бу видов затрат"))
+	1;
+	ENDIF
+	)
+ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+
+ENDFIX
+FIX(
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/@RELATIVE("Всего по видам затрат (пол-ль)",0)
+/*ПРОДУКТ ПОЛУЧАТЕЛЬ								*/"бу вида продукции (пол-ль)"
+/*ПОКАЗАТЕЛИ                                        */"База"
+/*НАПРАВЛЕНИЕ                     					*/"бу направления"
+/*КОНТРАГЕНТЫ                                       */"бу контрагента"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */@RELATIVE(@MEMBER(@CONCATENATE(@NAME({МВЗ})," (пол-ль)")),0)
+/*ЦФО                                               */"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                                   */"бу элемента затрат"
+/*ПРОДУКЦИЯ                                         */
+/*МВЗ                                               */@RELATIVE(@MEMBER(@CONCATENATE(@NAME({МВЗ})," (пол-ль)")),0)
+/*ГОД                                               */{ГОД}
+/*ВЕРСИЯ                                            */{ВЕРСИЯ}
+/*СЦЕНАРИЙ                                          */{СЦЕНАРИЙ}
+/*ПЕРИОД                                            */@ILDESCENDANTS({СПИСОК_ПЕРИОД}) and @RELATIVE("Всего год",0)
+/*СЧЕТА БАЛАНСА                                     */"Драйвер: Продукция участка"
+/*ВАЛЮТА                                            */"бу валюты"
+/*СТАТЬИ                                            */ "Сырье и основные материалы."
+/*ВИД ЗАТРАТ                                        */ "ТехЭлемент"
+/*ПРОЧЕЕ                                            */"бу прочих справочников"                           
+)
+AGG("ПРОДУКЦИЯ");
+ENDFIX
+FIX(
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/"бу видов затрат (пол-ль)"
+/*ПРОДУКТ ПОЛУЧАТЕЛЬ								*/"бу вида продукции (пол-ль)"
+/*ПОКАЗАТЕЛИ                                        */
+/*НАПРАВЛЕНИЕ                   				  	*/"бу направления"
+/*КОНТРАГЕНТЫ                                       */"бу контрагента"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */"бу МВЗ (пол-ль)"
+/*ЦФО                                               */"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                                   */"бу элемента затрат"
+/*ПРОДУКЦИЯ                                         */"бу вида продукции"
+/*МВЗ                                               */@RELATIVE({МВЗ},0)
+/*ГОД                                               */{ГОД}
+/*ВЕРСИЯ                                            */"Рабочая 1"
+/*СЦЕНАРИЙ                                          */"Проект"
+/*ПЕРИОД                                            */"P0"
+/*СЧЕТА БАЛАНСА                                     */
+/*ВАЛЮТА                                            */"бу валюты"
+/*СТАТЬИ                                            */"Сырье и основные материалы."
+/*ВИД ЗАТРАТ                                        */ @Relative("Всего по видам затрат", 0)
+/*ПРОЧЕЕ                                            */"бу прочих справочников"                           
+)
+/*Создаем дравера для распределения на конечный продукт*/
+SET CREATENONMISSINGBLK ON;
+FIXPARALLEL(8,@DESCENDANTS("Драйвера распределения"))
+
+"Кол-во"(
+/*Отключаем перекладку на "ТЧМ в целом" так как на нем лежит не распределяемая доля себестоимости продукта */
+IF(NOT @ISMBR("ТЧМ в целом") and NOT @ISMBR("ТЧМС в целом"))
+IF(@SUMRANGE("Кол-во"->"Драйвера распределения",@Relative("ПОЛНАЯ СЕБЕСТОИМОСТЬ",0))==#missing)
+        IF(@ISSIBLING("ОПР ДП") and @ISMBR("Драйвер: Чугун в пересчете на передельный"))
+		@POWER(1,{МВЗ}->"ПРОДУКЦИЯ ТЧМ и ТЧМС"->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("ВИД_ЗАТРАТ"))," (пол-ль)"))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Всего год"->"ТехЭлемент"->"Сырье и основные материалы."->"Драйвер: Продукция участка"->"База"->{СЦЕНАРИЙ}->{ВЕРСИЯ});
+         ELSEIF(@ISSIBLING("ОПР Автохозяйство") and @ISMBR("Драйвер: Тарифный фонд (Автоцех)"))
+		@POWER(1,{МВЗ}->"ПРОДУКЦИЯ ТЧМ и ТЧМС"->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("ВИД_ЗАТРАТ"))," (пол-ль)"))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Всего год"->"ТехЭлемент"->"Сырье и основные материалы."->"Драйвер: Продукция участка"->"База"->{СЦЕНАРИЙ}->{ВЕРСИЯ});
+		ELSEIF(@ISMBR("Уч металлопродукции") and @ISMBR("Драйвер: Железо"))
+        @POWER(1,{МВЗ}->"ПРОДУКЦИЯ ТЧМ и ТЧМС"->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("ВИД_ЗАТРАТ"))," (пол-ль)"))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Всего год"->"ТехЭлемент"->"Сырье и основные материалы."->"Драйвер: Продукция участка"->"База"->{СЦЕНАРИЙ}->{ВЕРСИЯ});
+        ELSEIF(@ISMBR("Уч пр-ва условного газа") and @ISMBR("Драйвер: Коэффициент эксергии"))
+        @POWER(1,{МВЗ}->"ПРОДУКЦИЯ ТЧМ и ТЧМС"->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("ВИД_ЗАТРАТ"))," (пол-ль)"))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Всего год"->"ТехЭлемент"->"Сырье и основные материалы."->"Драйвер: Продукция участка"->"База"->{СЦЕНАРИЙ}->{ВЕРСИЯ});
+		ELSEIF(@ISMBR("СТЧ","УДЧ","Уч разливочных машин") and @ISMBR("Драйвер: ФОТ"))
+		@POWER(1,{МВЗ}->"ПРОДУКЦИЯ ТЧМ и ТЧМС"->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("ВИД_ЗАТРАТ"))," (пол-ль)"))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Всего год"->"ТехЭлемент"->"Сырье и основные материалы."->"Драйвер: Продукция участка"->"База"->{СЦЕНАРИЙ}->{ВЕРСИЯ});
+		ELSEIF(@ISMBR("№9. Цех связи","№11. АСС","№13. ЦЛХТиТК","№20. Управление","№22. ИТЦ","№25. ЦЛА","№26. Хоз цех","№29. ЦОП","Управление") and @ISMBR("Драйвер: Выручка от реализации ТП"))
+		@POWER(1,{МВЗ}->"ПРОДУКЦИЯ ТЧМ и ТЧМС"->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("ВИД_ЗАТРАТ"))," (пол-ль)"))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Всего год"->"ТехЭлемент"->"Сырье и основные материалы."->"Драйвер: Продукция участка"->"База"->{СЦЕНАРИЙ}->{ВЕРСИЯ});
+		ELSEIF(NOT @ISMBR(@LIST("№9. Цех связи","№11. АСС","№13. ЦЛХТиТК","№20. Управление","№22. ИТЦ","№25. ЦЛА","№26. Хоз цех","№29. ЦОП","Управление","СТЧ","УДЧ","Уч разливочных машин","Уч пр-ва условного газа","Уч металлопродукции",@RELATIVE("Доменные печи",0),@RELATIVE("№12. Автохозяйство",0))) and @ISMBR("Драйвер: Продукция участка"))
+        @POWER(1,{МВЗ}->"ПРОДУКЦИЯ ТЧМ и ТЧМС"->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("ВИД_ЗАТРАТ"))," (пол-ль)"))->@MEMBER(@CONCATENATE(@NAME(@CURRMBR("МВЗ"))," (пол-ль)"))->"Всего год"->"ТехЭлемент"->"Сырье и основные материалы."->"Драйвер: Продукция участка"->"База"->{СЦЕНАРИЙ}->{ВЕРСИЯ});
+        ENDIF
+ENDIF
+ENDIF)
+SET CREATENONMISSINGBLK OFF;
+CLEARBLOCK EMPTY;
+ENDFIXPARALLEL
+
+
+ENDFIX
+
+
+
+FIX(
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/"бу видов затрат (пол-ль)"
+/*ПРОДУКТ ПОЛУЧАТЕЛЬ								*/"бу вида продукции (пол-ль)"
+/*ПОКАЗАТЕЛИ                                        */"Кол-во"
+/*НАПРАВЛЕНИЕ                     					*/"бу направления"
+/*КОНТРАГЕНТЫ                                       */"бу контрагента"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */"бу МВЗ (пол-ль)"
+/*ЦФО                                               */"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                                   */"бу элемента затрат"
+/*ПРОДУКЦИЯ                                         */"бу вида продукции"
+/*МВЗ                                               */@Relative({МВЗ},0)
+/*ГОД                                               */{ГОД}
+/*ВЕРСИЯ                                            */"Рабочая 1"
+/*СЦЕНАРИЙ                                          */"Проект"
+/*ПЕРИОД                                            */"P0"
+/*СЧЕТА БАЛАНСА                                     */@Relative("Драйвера распределения",0)
+/*ВАЛЮТА                                            */"бу валюты"
+/*СТАТЬИ                                            */@Relative("ПРОИЗВОДСТВЕННАЯ СЕБЕСТОИМОСТЬ",0)
+/*ВИД ЗАТРАТ                                        */ 
+/*ПРОЧЕЕ                                            */"бу прочих справочников"                           
+)
+
+AGG("ВИД_ЗАТРАТ");
+
+ENDFIX
+FIX(
+/*ВИД ЗАТРАТ ПОЛУЧАТЕЛЬ								*/@RELATIVE("Всего по видам затрат (пол-ль)",0)
+/*ПРОДУКТ ПОЛУЧАТЕЛЬ								*/"бу вида продукции (пол-ль)"
+/*ПОКАЗАТЕЛИ                                        */"База"
+/*НАПРАВЛЕНИЕ                     					*/"бу направления"
+/*КОНТРАГЕНТЫ                                       */"бу контрагента"
+/*МВЗ ПОЛУЧАТЕЛЬ                                    */@RELATIVE(@MEMBER(@CONCATENATE(@NAME({МВЗ})," (пол-ль)")),0)
+/*ЦФО                                               */"ПЭО"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ                                   */"бу элемента затрат"
+/*ПРОДУКЦИЯ                                         */"ПРОДУКЦИЯ ТЧМ и ТЧМС"
+/*МВЗ                                               */@RELATIVE(@MEMBER(@CONCATENATE(@NAME({МВЗ})," (пол-ль)")),0)
+/*ГОД                                               */{ГОД}
+/*ВЕРСИЯ                                            */{ВЕРСИЯ}
+/*СЦЕНАРИЙ                                          */{СЦЕНАРИЙ}
+/*ПЕРИОД                                            */@ILDESCENDANTS({СПИСОК_ПЕРИОД}) and @RELATIVE("Всего год",0)
+/*СЧЕТА БАЛАНСА                                     */"Драйвер: Продукция участка"
+/*ВАЛЮТА                                            */"бу валюты"
+/*СТАТЬИ                                            */ "Сырье и основные материалы."
+/*ВИД ЗАТРАТ                                        */ "бу видов затрат"
+/*ПРОЧЕЕ                                            */"бу прочих справочников"                           
+)
+CLEARBLOCK ALL;
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

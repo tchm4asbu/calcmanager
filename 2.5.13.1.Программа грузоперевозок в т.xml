@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="2" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="3" name="ПЕРИОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Period</property>
+      <property name="prompt_text">Выберите период</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого год"</value>
+    </variable>
+    <variable id="4" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+    <variable id="5" name="МВЗ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimension">МВЗ</property>
+      <property name="dimensionInputMode">name</property>
+      <property name="prompt_text">Выберите МВЗ</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого по МВЗ"</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="2.5.13.1.Программа грузоперевозок в т" product="Planning">
+      <property name="description">Программа грузоперевозок в т</property>
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">2.5.13.1.Программа грузоперевозок в т</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <variable_references>
+        <variable_reference id="2" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.5.13.1.Программа грузоперевозок в т</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.5.13.1.Программа грузоперевозок в т</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="4" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.5.13.1.Программа грузоперевозок в т</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="5" name="МВЗ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.5.13.1.Программа грузоперевозок в т</property>
+          <property name="seq">4</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="ПЕРИОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.5.13.1.Программа грузоперевозок в т</property>
+          <property name="seq">5</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"80_Увеличение"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+  var NextM=2;
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+/*Агрегируем Срез Сметы для переноса*/
+FIX(
+/*СТАТЬИ								*/"бу статьи"
+/*ЦФО									*/"ПЭО"
+/*ВАЛЮТА								*/"RUR"
+/*МВЗ									*/"Грузоперевозки_"
+/*КОНТРАГЕНТЫ 						 	*/
+/*НАПРАВЛЕНИЕ 		*/"бу направления"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ						*/"бу элемента затрат"
+/*СЧЕТА БАЛАНСА							*/"20_Выбытие"
+/*ГОД									*/{ГОД}
+/*ВЕРСИЯ								*/{ВЕРСИЯ}
+/*ПЕРИОД								*/@RELATIVE({ПЕРИОД},0)
+/*СЦЕНАРИЙ								*/{СЦЕНАРИЙ}
+/*ПРОДУКЦИЯ 							*/
+/*ВИД ЗАТРАТ 						 	*/
+/*ПРОЧЕЕ 							 	*/@RELATIVE("Всего по видам перевозок",0 ),"бу прочих справочников"
+/*ПОКАЗАТЕЛИ 						    */"Кол-во на т/км"
+/*МВЗ ПОЛУЧАТЕЛЬ 					 	*/@RELATIVE("ТЧМ итого (пол-ль)",0 ),"бу МВЗ (пол-ль)"
+)
+FIX(
+/*КОНТРАГЕНТЫ 						 	*/@RELATIVE("Итого по контрагентам" , 0),"бу контрагента"
+/*ВИД ЗАТРАТ 						 	*/
+/*ПРОДУКЦИЯ 							*/@RELATIVE("Всего по продукции",0),"бу вида продукции"
+)
+
+AGG("ВИД_ЗАТРАТ");
+
+ENDFIX
+
+FIX(
+/*КОНТРАГЕНТЫ 						 	*/@RELATIVE("Итого по контрагентам" , 0),"бу контрагента"
+/*ВИД ЗАТРАТ 						 	*/"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*ПРОДУКЦИЯ 							*/
+)
+
+AGG("ПРОДУКЦИЯ");
+
+ENDFIX
+
+FIX(
+/*КОНТРАГЕНТЫ 						 	*/
+/*ВИД ЗАТРАТ 						 	*/"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*ПРОДУКЦИЯ 							*/"ПРОДУКЦИЯ ТЧМ и ТЧМС"
+)
+
+AGG("КОНТРАГЕНТЫ");
+
+ENDFIX
+
+ENDFIX
+FIX(
+/*ЦФО 								*/"ПЭО"
+/*ВАЛЮТА 							*/"RUR"
+/*КОНТРАГЕНТЫ 						*/
+/*МВЗ 								*/@RELATIVE({МВЗ},0)
+/*НАПРАВЛЕНИЕ 	*/"бу направления"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ					*/"бу элемента затрат"
+/*ГОД								*/{ГОД}
+/*ВЕРСИЯ							*/{ВЕРСИЯ}
+/*ПЕРИОД							*/@RELATIVE("Всего год",0)
+/*СЦЕНАРИЙ							*/{СЦЕНАРИЙ}
+/*ВИД ЗАТРАТ						*/"бу видов затрат"
+/*ПРОЧЕЕ							*/
+/*ПОКАЗАТЕЛИ						*/
+/*МВЗ ПОЛУЧАТЕЛЬ					*/"бу МВЗ (пол-ль)"
+/*ПРОДУКЦИЯ							*/
+/*СТАТЬИ							*/"бу статьи"
+/*СЧЕТА БАЛАНСА						*/"20_Выбытие"
+)
+
+SET CREATENONMISSINGBLK ON;
+
+
+FIX(
+/*КОНТРАГЕНТЫ 						*/"бу контрагента"
+/*ПРОЧЕЕ							*/"Поступление грузов ТЧМ","Внутризаводские перевозки"
+/*ПРОДУКЦИЯ							*/"Грузоперевозки."
+/*ПОКАЗАТЕЛИ						*/
+)
+
+"Кол-во" = "Кол-во"->"Всего по видам затрат"->"бу вида продукции"->"ТЧМ итого (пол-ль)";
+
+ENDFIX
+
+
+FIX(
+/*КОНТРАГЕНТЫ 						*/"бу контрагента"
+/*ПРОЧЕЕ							*/"Поступление грузов контраг."
+/*ПРОДУКЦИЯ							*/"Грузоперевозки."
+/*ПОКАЗАТЕЛИ						*/
+)
+
+"Кол-во" = "Кол-во"->"бу видов затрат"->"бу вида продукции"->"ТЧМ итого (пол-ль)"->"Всего по контрагентам";
+
+ENDFIX
+
+
+SET CREATENONMISSINGBLK OFF;
+CLEARBLOCK EMPTY;
+
+ENDFIX
+/*Удаляем лишний агрегат Сметы для переноса*/
+FIX(
+/*СТАТЬИ								*/"бу статьи"
+/*ЦФО									*/"ПЭО"
+/*ВАЛЮТА								*/"RUR"
+/*МВЗ									*/"Грузоперевозки_"
+/*КОНТРАГЕНТЫ 						 	*/"Контрагенты ТЧМ и ТЧМС"
+/*НАПРАВЛЕНИЕ 		*/"бу направления"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ						*/"бу элемента затрат"
+/*СЧЕТА БАЛАНСА							*/"20_Выбытие"
+/*ГОД									*/{ГОД}
+/*ВЕРСИЯ								*/{ВЕРСИЯ}
+/*ПЕРИОД								*/@RELATIVE({ПЕРИОД},0)
+/*СЦЕНАРИЙ								*/{СЦЕНАРИЙ}
+/*ПРОДУКЦИЯ 							*/"ПРОДУКЦИЯ ТЧМ и ТЧМС"
+/*ВИД ЗАТРАТ 						 	*/"ВИДЫ ЗАТРАТ ТЧМ И ТЧМС"
+/*ПРОЧЕЕ 							 	*/@RELATIVE("Всего по видам перевозок",0 ),"бу прочих справочников"
+/*ПОКАЗАТЕЛИ 						    */"Кол-во на т/км"
+/*МВЗ ПОЛУЧАТЕЛЬ 					 	*/@RELATIVE("ТЧМ итого (пол-ль)",0 ),"бу МВЗ (пол-ль)"
+)
+
+CLEARBLOCK ALL;
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

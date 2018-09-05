@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="2" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="3" name="ПЕРИОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Period</property>
+      <property name="prompt_text">Выберите период</property>
+      <property name="scope">ruleset</property>
+      <value>"Итого год"</value>
+    </variable>
+    <variable id="4" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="2.3.2.2.Нормативы расхода сырья и топлива ЦПДМиШ" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">2.3.2.2.Нормативы расхода сырья и топлива ЦПДМиШ</property>
+      <variable_references>
+        <variable_reference id="2" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.3.2.2.Нормативы расхода сырья и топлива ЦПДМиШ</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.3.2.2.Нормативы расхода сырья и топлива ЦПДМиШ</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="ПЕРИОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.3.2.2.Нормативы расхода сырья и топлива ЦПДМиШ</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="4" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">2.3.2.2.Нормативы расхода сырья и топлива ЦПДМиШ</property>
+          <property name="seq">4</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[SET AGGMISSG ON;
+SET UPDATECALC OFF;
+SET CREATEBLOCKONEQ OFF;
+SET CREATENONMISSINGBLK OFF;
+SET FRMLBOTTOMUP OFF;
+SET REMOTECALC OFF;
+SET CALCPARALLEL 1;
+SET CALCTASKDIMS 1;
+SET EMPTYMEMBERSETS ON;
+SET FRMLRTDYNAMIC OFF;
+SET MSG INFO;
+/* Проверка корректности рассчитываемого среза данных */
+
+FIX(
+/* ВАЛЮТА							*/	"бу валюты"
+/* ПЕРИОД							*/	"P0"
+/* ГОД								*/	"No Year"
+/* ВЕРСИЯ							*/	
+/* СЦЕНАРИЙ							*/	
+/* ЦФО								*/	"бу ЦФО"
+/* МВЗ								*/	"бу МВЗ"
+/* МВЗ ПОЛУЧАТЕЛЬ					*/	"бу МВЗ (пол-ль)"
+/* СЧЕТА БАЛАНСА					*/	"80_Увеличение"
+/* СТАТЬИ							*/	
+/* ПОКАЗАТЕЛИ						*/	"Сумма"
+/* ВИД ЗАТРАТ						*/	"бу видов затрат"
+/* ПРОДУКЦИЯ						*/	"бу вида продукции"
+/* КОНТРАГЕНТЫ						*/	"бу контрагента"
+/* НАПРАВЛЕНИЕ	*/	"бу направления"
+/* ЭЛЕМЕНТЫ_ЗАТРАТ					*/	"бу элемента затрат"
+/* ПРОЧЕЕ							*/	"бу прочих справочников"
+
+)
+  SET CREATENONMISSINGBLK ON;
+
+  
+  var ErrFlagScenario=0;
+  var ErrFlagVersion=0;
+  var NextM=2;
+  /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА СЦЕНАРИЯ */
+  FIX(/* Сценарий */ {СЦЕНАРИЙ} AND @LIST(&ОТКРЫТЫЕ_СЦЕНАРИИ))
+    FIX(
+    /* Сценарий */ 
+    /* Версия   */ "Рабочая 1"
+    )
+     "бу статьи" (
+     IF (ErrFlagScenario==0)
+            ErrFlagScenario=1;
+     ENDIF
+     );
+
+    ENDFIX
+  ENDFIX
+
+   /* ПРОВЕРКА КОРРЕКТНОСТИ ВЫБОРА ВЕРСИИ */
+  FIX(/* Версия  */ {ВЕРСИЯ} AND @LIST(&ОТКРЫТЫЕ_ВЕРСИИ))
+    FIX(
+    /* Сценарий */ "Проект"
+    /* Версия   */ 
+    )
+     "бу статьи" (
+     IF (ErrFlagVersion==0)
+            ErrFlagVersion=1;
+     ENDIF
+     );
+    ENDFIX
+  ENDFIX
+
+  /* ВЫВОД СООБЩЕНИЙ О НЕКОРРЕКТНОМ СРЕЗЕ */
+  FIX(
+  /* Сценарий     */ "Проект"
+  /* Версия       */ "Рабочая 1"
+  )
+
+   "бу статьи" (
+    IF (ErrFlagScenario==0)
+       @RETURN("Выбран сценарий, закрытый для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    IF (ErrFlagVersion==0)
+       @RETURN("Выбрана версия, закрытая для расчета. Расчет не произведен.",ERROR);
+    ENDIF
+    )
+
+   ENDFIX
+ENDFIX
+SET CREATENONMISSINGBLK OFF;
+FIX(
+/*ЦФО									*/"ПЭО"
+/*ПРОЧЕЕ								*/"бу прочих справочников"
+/*НАПРАВЛЕНИЕ			*/"бу направления"
+/*КОНТРАГЕНТЫ							*/"бу контрагента"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ						*/"бу элемента затрат"
+/*СЧЕТА БАЛАНСА							*/"20_Начисление"
+/*ВАЛЮТА								*/"бу валюты"
+/*МВЗ ПОЛУЧАТЕЛЬ						*/"бу МВЗ (пол-ль)"
+/*МВЗ									*/
+/*СЦЕНАРИЙ								*/{СЦЕНАРИЙ}
+/*ГОД									*/{ГОД}
+/*ВЕРСИЯ								*/{ВЕРСИЯ}
+/*ПЕРИОД								*/@RELATIVE({ПЕРИОД},0)
+/*ВИД ЗАТРАТ							*/
+/*СТАТЬИ								*/
+)
+
+SET CREATENONMISSINGBLK ON;
+FIX(
+/*ВИД ЗАТРАТ							*/"Электроэнергия"
+/*СТАТЬИ								*/"Энергозатраты по переделу"
+/*МВЗ									*/"Копровый Уч","Уч щебень"
+/*ПРОДУКЦИЯ								*/"Скрап переработанный.","Огневая резка металлолом","Щебень шлаковый в целом"
+)
+
+"Кол-во"(
+
+IF(@ISMBR("Скрап переработанный.")
+AND 
+@ISMBR("Копровый Уч"))
+"Кол-во"="Копровый Уч"->"Скрап переработанный."->"Норма на ед."*"бу видов затрат"->"Копровый Уч"->"бу контрагента"->"Всего по направлениям списания"->"Скрап переработанный."->"бу прочих справочников"->"ПЭО"->"бу элемента затрат"->"бу статьи"->"20_Выбытие"->"Итого по МВЗ (пол-ль)"->"Кол-во с учетом годного выхода"->"RUR";
+ELSEIF(@ISMBR("Огневая резка металлолом")
+AND 
+@ISMBR("Копровый Уч")
+)
+"Кол-во"="Копровый Уч"->"Огневая резка металлолом"->"Норма на ед."*"бу видов затрат"->"Копровый Уч"->"бу контрагента"->"Всего по направлениям списания"->"Огневая резка металлолом"->"бу прочих справочников"->"ПЭО"->"бу элемента затрат"->"бу статьи"->"20_Выбытие"->"Итого по МВЗ (пол-ль)"->"Кол-во с учетом годного выхода"->"RUR";
+ELSEIF(@ISMBR("Щебень шлаковый в целом")
+AND 
+@ISMBR("Уч щебень")
+)
+"Кол-во"="Уч щебень"->"Щебень шлаковый в целом"->"Норма на ед."*"бу видов затрат"->"Уч щебень"->"бу контрагента"->"Всего по направлениям списания"->"Щебень шлаковый"->"бу прочих справочников"->"ПЭО"->"бу элемента затрат"->"бу статьи"->"20_Выбытие"->"Итого по МВЗ (пол-ль)"->"Кол-во с учетом годного выхода"->"RUR";
+ENDIF;
+)
+
+
+ENDFIX
+
+FIX(
+/*ВИД ЗАТРАТ							*/"Электроэнергия"
+/*ПРОДУКЦИЯ								*/"бу вида продукции"
+/*СТАТЬИ								*/"Содержание основных фондов"
+/*МВЗ									*/"ОПР ЦПДМШ"
+)
+"Кол-во"(
+"Кол-во"="ОПР ЦПДМШ"->"Всего для нужд цеха"->"бу статьи"->"Кол-во"
+-"Копровый Уч"->"Скрап переработанный."->"Кол-во"->"Энергозатраты по переделу"-"Копровый Уч"->"Огневая резка металлолом"->"Кол-во"->"Энергозатраты по переделу"-"Уч щебень"->"Щебень шлаковый в целом"->"Кол-во"->"Энергозатраты по переделу";
+)
+
+
+
+ENDFIX
+
+FIX(
+/*СТАТЬИ								*/"Энергозатраты по переделу"
+)
+
+FIX(
+/*ПРОДУКЦИЯ								*/"Огневая резка металлолом"
+/*МВЗ									*/"Копровый Уч"
+)
+
+FIX(/*ВИД ЗАТРАТ							*/"Газ природный с учетом транспортировки"
+)
+
+
+
+"Кол-во"(
+"Кол-во"="ОПР ЦПДМШ"->"Всего для нужд цеха"->"бу статьи"->"Кол-во";
+)
+ENDFIX
+
+FIX(/*ВИД ЗАТРАТ							*/"Кислород технический"
+)
+"Кол-во"(
+"Кол-во"="ОПР ЦПДМШ"->"Всего для нужд цеха"->"бу статьи"->"Кол-во";
+)
+ENDFIX
+ENDFIX
+
+FIX(
+/*ВИД ЗАТРАТ							*/"Техническая вода"
+/*ПРОДУКЦИЯ								*/"Щебень шлаковый в целом"
+/*МВЗ									*/"Уч щебень"
+
+)
+"Кол-во"(
+"Кол-во"="ОПР ЦПДМШ"->"Всего для нужд цеха"->"бу статьи"->"Кол-во"-"Техническая вода"->"Содержание основных фондов"->"Кол-во"->"ОПР ЦПДМШ"->"бу вида продукции";
+)
+	
+
+ENDFIX
+ENDFIX
+
+
+FIX(
+/*ВИД ЗАТРАТ							*/"Питьевая вода","Горячая вода","Перекачка хозбытовых стоков","Пар"
+/*ПРОДУКЦИЯ								*/"бу вида продукции"
+/*СТАТЬИ								*/"Содержание основных фондов"
+/*МВЗ									*/"ОПР ЦПДМШ"
+)
+
+"Кол-во"(
+"Кол-во"="ОПР ЦПДМШ"->"Всего для нужд цеха"->"бу статьи"->"Кол-во";
+)
+ENDFIX
+
+SET CREATENONMISSINGBLK OFF;
+
+FIX(
+/*ВИД ЗАТРАТ							*/ "Электроэнергия","Техническая вода","Питьевая вода","Горячая вода","Перекачка хозбытовых стоков","Пар"
+/*ПРОДУКЦИЯ								*/"бу вида продукции"
+/*СТАТЬИ								*/"Содержание основных фондов"
+/*ПОКАЗАТЕЛИ							*/"Кол-во"
+)
+
+"ОПР ЦПДМШ"(
+@XWRITE("ОПР ЦПДМШ",@LOOPBACK,"бу контрагента","бу направления","бу вида продукции","бу прочих справочников","ПЭО","бу элемента затрат","бу счета баланса","RUR");
+)
+ENDFIX
+
+
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

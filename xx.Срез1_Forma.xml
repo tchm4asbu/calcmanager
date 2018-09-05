@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables></variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="xx.Срез1_Forma" product="Planning">
+      <property name="description">Выводит название формы на которой введены данные</property>
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">xx.Срез1_Forma</property>
+      <property name="enableNotifications">false</property>
+      <property name="enablePostProcessing">false</property>
+      <property name="enablePreProcessing">false</property>
+      <statement kind="script" name="" seq="1" type="component">
+        <component id="-100" name="" product="Planning" type="script">
+          <property name="application">ТЧМ</property>
+          <property name="plantype">Plan1</property>
+          <property name="display_label">FIX(</property>
+          <property name="Tile_Key">x1y0</property>
+          <script type="calcscript"><![CDATA[FIX(
+{ВАЛЮТА}
+{СЦЕНАРИЙ}
+{ВЕРСИЯ}
+{ВИД_ЗАТРАТ}
+{МВЗ}
+{КОНТРАГЕНТЫ}
+{НАПРАВЛЕНИЯ}
+{ПРОДУКЦИЯ}
+{ПРОЧЕЕ}
+{ЦФО}
+{ЭЛЕМЕНТЫ_ЗАТРАТ}
+{СТАТЬИ}
+{СЧЕТА_БАЛАНСА}
+{МВЗ_ПОЛУЧАТЕЛЬ}
+{ПОКАЗАТЕЛИ}
+{ПЕРИОД}
+)
+{ГОД}(
+   IF(@LEV({СЦЕНАРИЙ}) + @LEV({СЧЕТА_БАЛАНСА}) + @LEV({ЦФО}) + @LEV({ПЕРИОД}) + @LEV({ВЕРСИЯ}) + @LEV({ГОД}) + @LEV({ВАЛЮТА}) + @LEV({ВИД_ЗАТРАТ}) + @LEV({КОНТРАГЕНТЫ}) + @LEV({МВЗ}) + @LEV({НАПРАВЛЕНИЯ}) + @LEV({ПОКАЗАТЕЛИ}) + @LEV({ПРОДУКЦИЯ}) + @LEV({ПРОЧЕЕ}) + @LEV({СТАТЬИ}) + @LEV({ЭЛЕМЕНТЫ_ЗАТРАТ}) + @LEV({МВЗ_ПОЛУЧАТЕЛЬ})>0)
+      @RETURN ("Это агрегат. Воспользуйтесь Детализацией и попробуйте снова.",ERROR);
+   ELSE
+      IF(
+      @StringtoInteger(
+      @HypDataInsertForm(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@NAME({СЦЕНАРИЙ}),@NAME({СЧЕТ_БАЛАНСА})),@NAME({ЦФО})),@NAME({ПЕРИОД})),@NAME({ВЕРСИЯ})),@NAME({ГОД})),@NAME({ВАЛЮТА})),@NAME({ВИД_ЗАТРАТ})),@NAME({КОНТРАГЕНТ})),@NAME({МВЗ})),@NAME({НАПРАВЛЕНИЕ})),@NAME({ПОКАЗАТЕЛИ})),@NAME({ПРОДУКЦИЯ})),@NAME({ПРОЧЕЕ})),@NAME({СТАТЬЯ})),@NAME({ЭЛЕМЕНТЫ_ЗАТРАТ})),@NAME({МВЗ_ПОЛУЧАТЕЛЬ})),
+      @CalcMgrDoubleToString({СЦЕНАРИЙ}->{СЧЕТ_БАЛАНСА}->{ЦФО}->{ПЕРИОД}->{ВЕРСИЯ}->{ГОД}->{ВАЛЮТА}->{ВИД_ЗАТРАТ}->{КОНТРАГЕНТ}->{МВЗ}->{НАПРАВЛЕНИЕ}->{ПОКАЗАТЕЛИ}->{ПРОДУКЦИЯ}->{ПРОЧЕЕ}->{СТАТЬЯ}->{ЭЛЕМЕНТЫ_ЗАТРАТ}->{МВЗ_ПОЛУЧАТЕЛЬ}))
+      )+0<>0)
+      @RETURN (@CONCATENATE("Данные введены на форме: ",
+      @HypDataInsertForm(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@CONCATENATE(@NAME({СЦЕНАРИЙ}),@NAME({СЧЕТА_БАЛАНСА})),@NAME({ЦФО})),@NAME({ПЕРИОД})),@NAME({ВЕРСИЯ})),@NAME({ГОД})),@NAME({ВАЛЮТА})),@NAME({ВИД_ЗАТРАТ})),@NAME({КОНТРАГЕНТЫ})),@NAME({МВЗ})),@NAME({НАПРАВЛЕНИЯ})),@NAME({ПОКАЗАТЕЛИ})),@NAME({ПРОДУКЦИЯ})),@NAME({ПРОЧЕЕ})),@NAME({СТАТЬИ})),@NAME({ЭЛЕМЕНТЫ_ЗАТРАТ})),@NAME({МВЗ_ПОЛУЧАТЕЛЬ})),
+      @CalcMgrDoubleToString({СЦЕНАРИЙ}->{СЧЕТА_БАЛАНСА}->{ЦФО}->{ПЕРИОД}->{ВЕРСИЯ}->{ГОД}->{ВАЛЮТА}->{ВИД_ЗАТРАТ}->{КОНТРАГЕНТЫ}->{МВЗ}->{НАПРАВЛЕНИЯ}->{ПОКАЗАТЕЛИ}->{ПРОДУКЦИЯ}->{ПРОЧЕЕ}->{СТАТЬИ}->{ЭЛЕМЕНТЫ_ЗАТРАТ}->{МВЗ_ПОЛУЧАТЕЛЬ}))
+      ),ERROR);
+      ELSE 
+      @RETURN ("Данные не вводились через форму ввода.",ERROR);
+      ENDIF
+   ENDIF)
+ENDFIX]]></script>
+        </component>
+      </statement>
+      <globalrange>
+        <dimension name="ПЕРИОД" seq="1">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="ПОКАЗАТЕЛИ" seq="2">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="ЦФО" seq="3">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="НАПРАВЛЕНИЕ" seq="4">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="ПРОЧЕЕ" seq="5">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="ЭЛЕМЕНТЫ ЗАТРАТ" seq="6">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="МВЗ" seq="7">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="КОНТРАГЕНТЫ" seq="8">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="СТАТЬИ" seq="9">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="ВИД_ЗАТРАТ" seq="10"></dimension>
+        <dimension name="ПРОДУКЦИЯ" seq="11">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="МВЗ ПОЛУЧАТЕЛЬ" seq="12">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="СЧЕТА БАЛАНСА" seq="13">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="ВАЛЮТА" seq="14">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="СЦЕНАРИЙ" seq="15">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="ГОД" seq="16">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+        <dimension name="ВЕРСИЯ" seq="17">
+          <property name="comment"></property>
+          <expression>
+            <user_inp></user_inp>
+          </expression>
+        </dimension>
+      </globalrange>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

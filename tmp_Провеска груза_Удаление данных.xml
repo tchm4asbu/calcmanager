@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables>
+    <variable id="1" name="ГОД" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Year</property>
+      <property name="prompt_text">Выберите Год</property>
+      <property name="scope">ruleset</property>
+      <value>FY18</value>
+    </variable>
+    <variable id="2" name="ВЕРСИЯ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Version</property>
+      <property name="prompt_text">Выберите Версию</property>
+      <property name="scope">ruleset</property>
+      <value>Рабочая_1</value>
+    </variable>
+    <variable id="3" name="СЦЕНАРИЙ" product="Planning" type="member" usage="const">
+      <property name="array_type">string</property>
+      <property name="dimensionInputMode">type</property>
+      <property name="dimensionType">Scenario</property>
+      <property name="prompt_text">Выберите Сценарий</property>
+      <property name="scope">ruleset</property>
+      <value>Проект</value>
+    </variable>
+  </variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="tmp_Провеска груза_Удаление данных" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">tmp_Провеска груза_Удаление данных</property>
+      <variable_references>
+        <variable_reference id="2" name="ВЕРСИЯ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">tmp_Провеска груза_Удаление данных</property>
+          <property name="seq">1</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="1" name="ГОД">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">tmp_Провеска груза_Удаление данных</property>
+          <property name="seq">2</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+        <variable_reference id="3" name="СЦЕНАРИЙ">
+          <property name="hasvalue">true</property>
+          <property name="hidden">false</property>
+          <property name="rule_name">tmp_Провеска груза_Удаление данных</property>
+          <property name="seq">3</property>
+          <property name="type">3</property>
+          <property name="useAsOverrideValue">false</property>
+        </variable_reference>
+      </variable_references>
+      <script><![CDATA[FIX(
+/*ЭЛЕМЕНТЫ ЗАТРАТ					 */"бу элемента затрат"
+/*ЦФО 						  		 */@IDESCENDANTS("Центры финансовой ответсвенности")
+/*КОНТРАГЕНТЫ 						 */"бу контрагента"
+/*НАПРАВЛЕНИЕ 						 */"Тов. пр-ция (сч 43)"
+/*ПРОЧЕЕ 							 */"бу прочих справочников"
+/*СЧЕТА БАЛАНСА                      */"20_Выбытие"
+/*МВЗ ПОЛУЧАТЕЛЬ 					 */@IDESCENDANTS("МВЗ получатели")
+/*ВАЛЮТА 							  */"RUR"
+/*ВИД ЗАТРАТ 						  */"бу видов затрат"
+/*СТАТЬИ							   */"бу статьи"
+/*СЦЕНАРИЙ							   */{СЦЕНАРИЙ}
+/*ПЕРИОД							  */@RELATIVE("Всего год",0)
+/*ВЕРСИЯ 							  */{ВЕРСИЯ}
+/*ГОД 								   */{ГОД}
+/*ПРОДУКЦИЯ 						  */@REMOVE(@RELATIVE("Всего по продукции",0),"Провеска.")
+/*ПОКАЗАТЕЛИ 						     */
+/*МВЗ 								  */"Провеска груза"
+)
+
+"Кол-во с учетом годного выхода"(
+#Missing;)
+
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

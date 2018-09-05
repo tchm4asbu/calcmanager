@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables></variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="xx.Расчет затрат на продукию по нормативам" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">xx.Расчет затрат на продукию по нормативам</property>
+      <script></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>

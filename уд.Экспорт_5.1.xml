@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HBRRepo>
+  <variables></variables>
+  <rulesets></rulesets>
+  <rules>
+    <rule id="1" name="уд.Экспорт_5.1" product="Planning">
+      <property name="application">ТЧМ</property>
+      <property name="plantype">Plan1</property>
+      <property name="display_label">уд.Экспорт_5.1</property>
+      <script><![CDATA[FIX(
+/*МВЗ 								*/@RELATIVE("ТЧМС итого",0)
+)
+
+FIX(
+/*МВЗ ПОЛУЧАТЕЛЬ 					*/@RELATIVE("МВЗ получатели",0)
+/*МВЗ 								*/
+/*СЦЕНАРИЙ 							*/"Проект"
+/*ГОД 								*/"2018"
+/*ВАЛЮТА 							*//*"RUR"*/
+/*ВЕРСИЯ 							*/"Рабочая_3"
+/*ПРОЧЕЕ 							*/@IDESCENDANTS("ПРОЧИЕ СПРАВОЧНИКИ ТЧМ и ТЧМС")
+/*НАПРАВЛЕНИЕ 						*/"бу направления"
+/*ЭЛЕМЕНТЫ_ЗАТРАТ 					*/@IDESCENDANTS("ЭЛЕМЕНТЫ ЗАТРАТ ТЧМ И ТЧМС")
+/*ЦФО 								*/"ПЭО"
+/*КОНТРАГЕНТЫ 						*/"бу контрагента"
+/*ПРОДУКЦИЯ 						*/@IDESCENDANTS("Итого по продукции",0)
+/*ВИД ЗАТРАТ 						*/"Сертификаты"/* "Ж/Д тариф РЖД","Ж/д перевозки:"*/
+/*СТАТЬИ 							*/@IDESCENDANTS("ПОЛНАЯ СЕБЕСТОИМОСТЬ")
+/*СЧЕТА БАЛАНСА 					*/@IDESCENDANTS("Начисление")
+/*ПОКАЗАТЕЛИ 						*/"Сумма"
+/*ПЕРИОД 							*/"Ноябрь"
+)
+
+Cleardata "RUR";
+
+ENDFIX
+ENDFIX]]></script>
+    </rule>
+  </rules>
+  <components></components>
+</HBRRepo>
